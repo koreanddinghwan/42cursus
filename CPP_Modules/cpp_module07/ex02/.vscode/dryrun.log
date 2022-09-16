@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/ddinghwan/Documents/42seoul/CPP_Modules/cpp_module07/ex02'
+c++ -Wall -Werror -Wextra -g3 -std=c++98 -I. -c main.cpp -o main.o
+c++ -Wall -Werror -Wextra -g3 -std=c++98 -I. main.o -o simulation
+make: Leaving directory `/Users/ddinghwan/Documents/42seoul/CPP_Modules/cpp_module07/ex02'
+ 
