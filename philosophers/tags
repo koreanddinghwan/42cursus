@@ -1,0 +1,111 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ACTION_DIR	Makefile	/^ACTION_DIR = .\/action\/$/;"	m
+ACTION_OBJS	Makefile	/^ACTION_OBJS = $(addprefix $(ACTION_DIR), $(ACTION_SRCS:.c=.o))$/;"	m
+ACTION_SRCS	Makefile	/^ACTION_SRCS =  eating.c sleep_think.c checking.c$/;"	m
+ALIVE	includes/philo.h	/^# define ALIVE /;"	d
+CFLAGS	Makefile	/^CFLAGS = -Wextra -Wall -Wextra -pthread -g3 -fsanitize=thread$/;"	m
+DEAD	includes/philo.h	/^# define DEAD /;"	d
+DIE	includes/philo.h	/^# define DIE /;"	d
+DIE_MSG	includes/philo.h	/^# define DIE_MSG /;"	d
+EAT	includes/philo.h	/^# define EAT /;"	d
+EAT_MSG	includes/philo.h	/^# define EAT_MSG /;"	d
+FAIL	includes/philo.h	/^# define FAIL /;"	d
+FORK	includes/philo.h	/^# define FORK /;"	d
+FORK_MSG	includes/philo.h	/^# define FORK_MSG /;"	d
+FULL	includes/philo.h	/^# define FULL /;"	d
+GCC	Makefile	/^GCC = cc$/;"	m
+HUNGRY	includes/philo.h	/^# define HUNGRY /;"	d
+INC	Makefile	/^INC = .\/includes\/$/;"	m
+INIT_DIR	Makefile	/^INIT_DIR = .\/init\/$/;"	m
+INIT_OBJS	Makefile	/^INIT_OBJS = $(addprefix $(INIT_DIR), $(INIT_SRCS:.c=.o))$/;"	m
+INIT_SRCS	Makefile	/^INIT_SRCS = main.c init_data.c init_memory.c init_mutex.c$/;"	m
+LFORK	includes/philo.h	/^# define LFORK /;"	d
+NAME	Makefile	/^NAME = philo$/;"	m
+NOTOVER	includes/philo.h	/^# define NOTOVER /;"	d
+OBJS	Makefile	/^OBJS = $(ACTION_OBJS) $(INIT_OBJS) $(THREAD_OBJS) $(TOOLS_OBJS)$/;"	m
+OVER	includes/philo.h	/^# define OVER /;"	d
+PHILO_H	includes/philo.h	/^# define PHILO_H$/;"	d
+SLEEP	includes/philo.h	/^# define SLEEP /;"	d
+SLEEP_MSG	includes/philo.h	/^# define SLEEP_MSG /;"	d
+SUCCESS	includes/philo.h	/^# define SUCCESS /;"	d
+THINK	includes/philo.h	/^# define THINK /;"	d
+THINK_MSG	includes/philo.h	/^# define THINK_MSG /;"	d
+THREAD_DIR	Makefile	/^THREAD_DIR = .\/thread\/$/;"	m
+THREAD_OBJS	Makefile	/^THREAD_OBJS = $(addprefix $(THREAD_DIR), $(THREAD_SRCS:.c=.o))$/;"	m
+THREAD_SRCS	Makefile	/^THREAD_SRCS = init_thread.c join_thread.c philo.c reaper.c$/;"	m
+TOOLS_DIR	Makefile	/^TOOLS_DIR = .\/tools\/$/;"	m
+TOOLS_OBJS	Makefile	/^TOOLS_OBJS = $(addprefix $(TOOLS_DIR), $(TOOLS_SRCS:.c=.o))$/;"	m
+TOOLS_SRCS	Makefile	/^TOOLS_SRCS = data_free.c argument_validation.c ft_tools.c print_tools.c time_tools.c $/;"	m
+ac_err	tools/argument_validation.c	/^int	ac_err(int ac)$/;"	f
+all_free	tools/data_free.c	/^void	all_free(t_data *data)$/;"	f
+change_time_status	tools/print_tools.c	/^void	change_time_status(t_data *data, t_phdata *phdata, int type)$/;"	f
+check_data_dead	tools/print_tools.c	/^int	check_data_dead(t_data *data)$/;"	f
+check_dead	action/checking.c	/^int	check_dead(t_data *data, t_phdata *phdata)$/;"	f
+check_meal	action/checking.c	/^int	check_meal(t_data *data)$/;"	f
+check_num	tools/argument_validation.c	/^int	check_num(char *str)$/;"	f
+checking_dead	thread/reaper.c	/^void	*checking_dead(t_data *data)$/;"	f
+checking_dead_meal	thread/reaper.c	/^void	*checking_dead_meal(t_data *data)$/;"	f
+data	includes/philo.h	/^	t_data		*data;$/;"	m	struct:s_param
+data_free	tools/data_free.c	/^void	data_free(t_data *data)$/;"	f
+destroy_mutex	tools/data_free.c	/^void	destroy_mutex(t_data *data)$/;"	f
+dying_message	action/checking.c	/^void	dying_message(t_data *data, t_phdata *phdata)$/;"	f
+eating	action/eating.c	/^int	eating(t_data *data, t_phdata *phdata)$/;"	f
+forks	includes/philo.h	/^	pthread_mutex_t	*forks;$/;"	m	struct:s_data
+ft_atoi	tools/ft_tools.c	/^int	ft_atoi(const char *str)$/;"	f
+ft_isspace	tools/ft_tools.c	/^static int	ft_isspace(char c)$/;"	f	file:
+ft_strlen	tools/ft_tools.c	/^long long	ft_strlen(char *str)$/;"	f
+get_type_msg	tools/print_tools.c	/^char	*get_type_msg(int type)$/;"	f
+grab	action/eating.c	/^int	grab(t_data *data, t_phdata *phdata)$/;"	f
+init_data	init/init_data.c	/^int	init_data(t_data **data, int ac, char **av)$/;"	f
+init_data_mem	init/init_memory.c	/^int	init_data_mem(t_data **data)$/;"	f
+init_memory	init/init_memory.c	/^int	init_memory(t_data *data)$/;"	f
+init_mutex	init/init_mutex.c	/^int	init_mutex(t_data *data)$/;"	f
+init_phdata	init/init_data.c	/^void	init_phdata(t_data *data)$/;"	f
+init_thread	thread/init_thread.c	/^int	init_thread(t_data *data)$/;"	f
+init_time	includes/philo.h	/^	long long		init_time;$/;"	m	struct:s_data
+is_full	includes/philo.h	/^	int			is_full;$/;"	m	struct:s_phdata
+isdead	includes/philo.h	/^	int				isdead;$/;"	m	struct:s_data
+join_thread	thread/join_thread.c	/^int	join_thread(t_data *data)$/;"	f
+last_eat	includes/philo.h	/^	long long	last_eat;$/;"	m	struct:s_phdata
+left_idx	includes/philo.h	/^	int			left_idx;$/;"	m	struct:s_phdata
+main	init/main.c	/^int	main(int ac, char **av)$/;"	f
+make_param	thread/init_thread.c	/^void	*make_param(t_data *data, int i)$/;"	f
+nth	includes/philo.h	/^	int			nth;$/;"	m	struct:s_phdata
+num	includes/philo.h	/^	int				num;$/;"	m	struct:s_data
+ph_init_time	includes/philo.h	/^	long long	ph_init_time;$/;"	m	struct:s_phdata
+phdata	includes/philo.h	/^	t_phdata		*phdata;$/;"	m	struct:s_data
+phdata	includes/philo.h	/^	t_phdata	*phdata;$/;"	m	struct:s_param
+philo	thread/philo.c	/^void	*philo(void *param)$/;"	f
+print_total_eat	tools/print_tools.c	/^void	print_total_eat(t_data *data)$/;"	f
+reaper	thread/reaper.c	/^void	*reaper(void *param)$/;"	f
+release	action/eating.c	/^int	release(t_data *data, t_phdata *phdata)$/;"	f
+right_idx	includes/philo.h	/^	int			right_idx;$/;"	m	struct:s_phdata
+s_data	includes/philo.h	/^typedef struct s_data$/;"	s
+s_param	includes/philo.h	/^typedef struct s_param$/;"	s
+s_phdata	includes/philo.h	/^typedef struct s_phdata$/;"	s
+sleeping	action/sleep_think.c	/^int	sleeping(t_data *data, t_phdata *phdata)$/;"	f
+status	includes/philo.h	/^	pthread_mutex_t	status;$/;"	m	struct:s_data
+struct_data	init/init_data.c	/^void	struct_data(t_data *data, char **av)$/;"	f
+t_arr	includes/philo.h	/^	pthread_t		*t_arr;$/;"	m	struct:s_data
+t_data	includes/philo.h	/^}	t_data;$/;"	t	typeref:struct:s_data
+t_diff	tools/time_tools.c	/^long long	t_diff(long long t)$/;"	f
+t_now	tools/time_tools.c	/^long long	t_now(void)$/;"	f
+t_param	includes/philo.h	/^}	t_param;$/;"	t	typeref:struct:s_param
+t_phdata	includes/philo.h	/^}	t_phdata;$/;"	t	typeref:struct:s_phdata
+t_reaper	includes/philo.h	/^	pthread_t		t_reaper;$/;"	m	struct:s_data
+t_usleep	tools/time_tools.c	/^void	t_usleep(long long t_obj, int sleep_time)$/;"	f
+thinking	action/sleep_think.c	/^int	thinking(t_data *data, t_phdata *phdata)$/;"	f
+time_to_die	includes/philo.h	/^	int				time_to_die;$/;"	m	struct:s_data
+time_to_eat	includes/philo.h	/^	int				time_to_eat;$/;"	m	struct:s_data
+time_to_sleep	includes/philo.h	/^	int				time_to_sleep;$/;"	m	struct:s_data
+times_must_eat	includes/philo.h	/^	int				times_must_eat;$/;"	m	struct:s_data
+total_eat	includes/philo.h	/^	int			total_eat;$/;"	m	struct:s_phdata
+validate_av_num	tools/argument_validation.c	/^int	validate_av_num(char **av)$/;"	f
+validate_struct_num	tools/argument_validation.c	/^int	validate_struct_num(t_data *data, char **av)$/;"	f
+write	includes/philo.h	/^	pthread_mutex_t	write;$/;"	m	struct:s_data
+write_msg	tools/print_tools.c	/^int	write_msg(t_data *data, long long time, t_phdata *phdata, int type)$/;"	f
