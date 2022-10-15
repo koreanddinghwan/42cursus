@@ -12,7 +12,7 @@
 
 NAME = philo
 GCC = cc
-CFLAGS = -Wextra -Wall -Wextra -pthread -g3 -fsanitize=thread
+CFLAGS = -Wextra -Wall -Wextra -pthread 
 DEBUG = -g3 -fsanitize=address
 INC = ./includes/
 
