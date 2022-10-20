@@ -94,6 +94,18 @@ C++98버전의 기능을 구현해야하므로, 이를 만족하는 최소한의
 	- <img width="420" alt="스크린샷 2022-10-18 오후 8 08 17" src="https://user-images.githubusercontent.com/76278794/196413645-2c7daaa5-1c0a-4aaf-8558-70bae0a314eb.png">
 	- [gcc4.3 version update](https://gcc.gnu.org/gcc-4.3/porting_to.html)
 
+<br>
+
+- 과제를 진행하면서 gcc의 소스코드를 버전별로 checkout 하면서 확인해보고있는데, 주석도 천차만별이다.
+- 특히 2.95버전은 기능상으로 모든 부분(std::pair의 operator들)이 부족하기때문에 다른 version으로 checkout해서 구현을 확인했다.
+- 낮은 버전을 checkout 해나가면서 참고하자.
+
+<br>
+
+[SGI란](https://www.boost.org/sgi/stl/alloc.html)  
+
+default allocator인 alloc은 작은 객체를 위한 자유로운 리스트를 유지한다.  
+큰 요청사항(큰 메모리 할당)을 만족하고, 작은 객체로 분리될 수 있는 더 큰 크기의 메모리를 할당하기위해 시스템이 제공하는 allocator를 사용한다.  
 
 <br>
 
