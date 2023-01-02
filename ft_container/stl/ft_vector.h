@@ -62,23 +62,29 @@ public:
 template <typename _Tp, typename _Alloc = std::allocator<_Tp>>
 class vector : protected _Vector_base<_Tp, _Alloc> {
 
+  typedef _Vector_base<_Tp, _Alloc> _Base;
+
   typedef _Tp value_type;
-  typedef _Alloc allocator_type;
-  typedef typename allocator_type::reference reference;
-  typedef typename allocator_type::const_reference const_reference;
-  typedef typename allocator_type::pointer pointer;
-  typedef typename allocator_type::const_pointer const_pointer;
+  typedef typename _Alloc::pointer pointer;
+  typedef typename _Alloc::const_pointer const_pointer;
+  typedef typename _Alloc::reference reference;
+  typedef typename _Alloc::const_reference const_reference;
   typedef std::iterator<std::random_access_iterator_tag, _Tp> iterator;
   typedef std::iterator<std::random_access_iterator_tag, _Tp> const_iterator;
   typedef ft::reverse_iterator<iterator> reverse_iterator;
   typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
-  typedef
-      typename ft::iterator_traits<iterator>::difference_type difference_type;
-  typedef std::size_t size_type;
+  typedef size_t size_type;
+  typedef ptrdiff_t difference_type;
+  typedef typename _Base::allocator_type allocator_type;
+
+protected:
+  // protected 상속한 vector_base의 멤버함수 2개와 멤버구조체 변수 M_impl을
+  // 가져온다.
+  using _Base::_M_allocate;
+  using _Base::_M_deallocate;
+  using _Base::_M_impl;
 
 public:
-  vector();
-
   explicit vector(const _Alloc &alloc);
 
   explicit vector(size_type count, const _Tp &value = _Tp(),
