@@ -199,6 +199,9 @@ template <class T> class iterator_traits<const T*>;
 
 ## 정의
 
+<img width="595" alt="Screen Shot 2023-01-02 at 11 22 41 AM" src="https://user-images.githubusercontent.com/76278794/210191211-fe4d65ff-d604-4a8e-81b3-9af0ababb585.png">
+
+
 ```cpp
 template< class Iter >
 class reverse_iterator;
@@ -209,6 +212,38 @@ class reverse_iterator;
 - 만약 bidirectional_iterator가 제공되면 end->begin으로 향하는 새로운 iterator를 생성한다.
 - 만약 iterator i로 reverce_iterator r이 생성된다면
 	- `&*r == &*(i-1)`은 항상 참이다.
+
+
+<br><br>
+
+# std::enable_if
+
+```cpp
+template< bool B, class T = void >
+struct enable_if;
+```
+
+- 만약 B가 true라면, std::enable_if는 public member typedef type T를 가진다.
+- B가 false라면 가지지 않는다.
+- 이 메타함수는 특히 trait type을 기반으로 candidate set에서 조건부로 함수를 제거하기위해 `SFINAE`를사용하는 편리한 방법이다.
+- 다양한 형태로 사용될 수 있다.
+	1. 추가 함수 인수로 사용된다.
+	2. return type으로써 사용
+	3. class template이나 function template 파라미터로 사용
+- enable_if에 대한 specialization은 undefined된다.
+
+<br>
+
+- 치환오류가 발생하는 경우, 오버로딩할 candidate set에서 제외한다.
+- Boost 라이브러리에서 오랜 기간 사용되어 왔고, C++ 11에서 정식 편입되었다.
+	- 우리가 구현하는건 std::enable_if로 편입되기 전이다.
+
+## SFINAE
+
+- `substitution failure is not an error`
+- 
+
+<br><br>
 
 ## member type
 
