@@ -110,6 +110,120 @@ default allocator인 alloc은 작은 객체를 위한 자유로운 리스트를 
 <br>
 
 
+# std::iterators_traits
+
+## std::iterator
+
+- iterator는 list, stack, tree등 자료구조의 기본 표현을 노출하지 않고 컬렉션의 요소를 탐색할 수 있도록 하는 동작디자인 패턴이다.
+- 컬렉션? 
+	- 컬렉션은 프로그래밍에서 사용되는 데이터 유형 중 하나이다.
+	- 개체 그룹의 컨테이너이며, list, map, vector 등 자료구조를 기반으로 데이터를 저장한다.
+- iterator 동작 디자인 패턴의 목적은 내부의 자료구조가 무엇인가에 관계없이 원소에 접근하는 방법을 제공한다.
+- iterator 패턴의 주요 아이디어는 이러한 컬렉션의 순회동작ㅇ르 iterator라는 별도의 개체로 추출하는 것이다.
+
+```c++
+// std::iterator example
+#include <iostream>     // std::cout
+#include <iterator>     // std::iterator, std::input_iterator_tag
+
+class MyIterator : public std::iterator<std::input_iterator_tag, int>
+{
+  int* p;
+public:
+  MyIterator(int* x) :p(x) {}
+  MyIterator(const MyIterator& mit) : p(mit.p) {}
+  MyIterator& operator++() {++p;return *this;}
+  MyIterator operator++(int) {MyIterator tmp(*this); operator++(); return tmp;}
+  bool operator==(const MyIterator& rhs) const {return p==rhs.p;}
+  bool operator!=(const MyIterator& rhs) const {return p!=rhs.p;}
+  int& operator*() {return *p;}
+};
+
+int main () {
+  int numbers[]={10,20,30,40,50};
+  MyIterator from(numbers);
+  MyIterator until(numbers+5);
+  for (MyIterator it=from; it!=until; it++)
+    std::cout << *it << ' ';
+  std::cout << '\n';
+
+  return 0;
+```
+
+- MyIterator 클래스는 std::iterator를 상속하는 클래스이다.
+- 남은 원소의 개수가 몇개이고, 현재위치가 어디인지에 대한 정보들이 캡슐화되어있는 상태로 사용한다.
+
+<br><br>
+
+
+## iterator_traits
+
+```cpp
+template< class Iter >
+struct iterator_traits;
+template< class T >
+struct iterator_traits<T*>;
+template< class T >
+struct iterator_traits<const T*>;
+```
+- traits 클래스는 iterator의 특성을 정의한다.
+- 표준 algorithm 헤더는 iterator들에게 주어지는의 특성을 정의하고, iterator들이 표현하는 범위를 그에 상응하는 `iterator_traits`의 인스턴스화를 통해 정의한다.
+- 모든 iterator type에 대해 상승하는 iterator_traits 클래스의 인스턴스화는 최소한 밑의 멤버 유형이 정의된 상태에서 정의되어야한다.
+	1. difference_type : iterator끼리의 뺄셈의 결과를 표현할때 사용하는 type
+	2. value_type : iterator가 point할 원소의 type
+	3. pointer : iterator가 point하는 원소의 pointer type
+	4. reference : iterator가 point할 원소의 reference type
+	5. iterator_category: 아래 중 1개
+		1. input_iterator_tag : iterator가 가리키는 값은 1번만 읽어지고, iterator는 증가한다.
+			- forward, bidirectional, random_access iterator들도 유효한 input iterator이다.
+		2. output_iterator_tag : iterator가 가리키는 값은 1번만 쓰여질 수 있고, iterator는 증가한다.
+		3. forward_iterator_tag : 범위 내의 연속적인 원소에 begin부터 end까지 접근한다.
+			- bidirectional, random_access iterator모두 유효한 forward_iterator이다.
+		4. bidirectional_iterator_tag : forward와 달리, end->begin, begin->end까지 모두 가능하다.
+		5. random_access_iterator_tag : 포인터처럼 임의접근이 가능한 iterator이다.
+			- pointer-types 또한 random_access iterator이다.
+
+<br>
+
+- 구현되어야하는 최소한의 템플릿 특수화는 다음과 같다.
+
+```cpp
+template <class Iterator> class iterator_traits;
+template <class T> class iterator_traits<T*>;
+template <class T> class iterator_traits<const T*>;
+```
+
+<br><br>
+
+# std::reverse_iterator
+
+## 정의
+
+```cpp
+template< class Iter >
+class reverse_iterator;
+```
+
+- reverse_iterator는 주어진 iterator의 방향을 바꾸는 어댑터이다.
+- 최소한 legacyBidirectionalIterator혹은 bidirectional_iterator 이어야한다.
+- 만약 bidirectional_iterator가 제공되면 end->begin으로 향하는 새로운 iterator를 생성한다.
+- 만약 iterator i로 reverce_iterator r이 생성된다면
+	- `&*r == &*(i-1)`은 항상 참이다.
+
+## member type
+
+- iterator_type	Iter
+- iterator_category	std::iterator_traits<Iter>::iterator_category
+- value_type	std::iterator_traits<Iter>::value_type
+- difference_type	std::iterator_traits<Iter>::difference_type
+- pointer	std::iterator_traits<Iter>::pointer
+- reference	std::iterator_traits<Iter>::reference
+
+
+
+
+<br><br>
+
 
 # std::vector
 
@@ -443,6 +557,20 @@ int main(void)
 <br><br>
 
 
-## stl_algobase.h
+# std::lexicographical_compare
+
+```c++
+template< class InputIt1, class InputIt2 >
+bool lexicographical_compare( InputIt1 first1, InputIt1 last1,
+                              InputIt2 first2, InputIt2 last2 );
+
+template< class InputIt1, class InputIt2, class Compare >
+bool lexicographical_compare( InputIt1 first1, InputIt1 last1,
+                              InputIt2 first2, InputIt2 last2, Compare comp );
+```
+
+- [first1, last1] 범위 내 값들이 [first2, last2]범위 내 값들보다 작은지 사전순으로 비교한다.
+	- < 연산자를 통해 비교한다.
+	- 또는 comp함수를 통해 비교한다.
 
 
