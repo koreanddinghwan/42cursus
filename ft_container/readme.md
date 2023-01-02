@@ -254,6 +254,23 @@ struct enable_if;
 - pointer	std::iterator_traits<Iter>::pointer
 - reference	std::iterator_traits<Iter>::reference
 
+<br><br>
+
+# std::lexicographical_compare
+
+```c++
+template< class InputIt1, class InputIt2 >
+bool lexicographical_compare( InputIt1 first1, InputIt1 last1,
+                              InputIt2 first2, InputIt2 last2 );
+
+template< class InputIt1, class InputIt2, class Compare >
+bool lexicographical_compare( InputIt1 first1, InputIt1 last1,
+                              InputIt2 first2, InputIt2 last2, Compare comp );
+```
+
+- [first1, last1] 범위 내 값들이 [first2, last2]범위 내 값들보다 작은지 사전순으로 비교한다.
+	- < 연산자를 통해 비교한다.
+	- 또는 comp함수를 통해 비교한다.
 
 
 
@@ -261,6 +278,24 @@ struct enable_if;
 
 
 # std::vector
+
+
+## design pattern
+
+- std::vector는 `sequence design pattern`의 예시이다.
+- linear한 원소를 표현한다.
+- dynamic array를 자료구조를 사용해 이 패턴을 구현한다.
+
+<br>
+
+- 특징
+	1. template클래스로써, template 파라미터로 원소의 type을 받는다.
+	2. operator[]로 상수시간에 임의접근이 가능하다.
+	3. push_back, pop_back은 마지막 원소에 대해 상수시간에 삽입, 삭제가 가능하다.
+	4. insert, erase 멤버함수로 어느 위치의 원소에대해서든 선형시간에 삽입, 삭제가 가능하다.
+	5. 보관하는 원소의 갯수에 따라 크기가 커지거나 작아진다.
+
+<br><br>
 
 ```c
 #include <bits/functexcept.h>
@@ -588,24 +623,72 @@ int main(void)
 		```
 	- main문에서 noreturn attribute가 붙은 코드를 호출하면 그 아래의 함수부는 main부에 작성되지 않는다.
 
+<br><br>
+
+## _Vector_base
+
+### 정의
+
+```cpp
+template <typename _Tp, typename _Alloc> struct _Vector_base {
+  struct _Vector_impl : public _Alloc {
+    _Tp *_M_start;
+    _Tp *_M_end;
+    _Tp *_M_end_of_storage;
+  };
+};
+```
+
+- std::vector 클래스 템플릿은 _Vector_base를 기반으로한다.
+- std::vector를 구현하기위한 기본적인 data member를 가지고 있다.
+- dynamic array의 start, end, 그리고 end_of_storage에 대한 포인터를 들고있다.
+
+<br>
+
+- template parameter로 _Tp, _Alloc을 받는다.
+	- _Tp : vector에 저장된 원소의 type
+	- _Alloc : vector의 메모리를 관리하는 allocator object의 type
+
+<br>
+
+- member
+	1. _Vector_impl
+		- _Alloc 즉 std::allocator 객체를 상속한다.
+		- _Alloc 객체에서 allocator 객체의 멤버함수에 대한 접근권한을 받는다.
+		- _M_start, _M_finish, _M_end_of_storage의 멤버변수는 vector의 dynamic array에 대한 포인터를 의미한다.
+	2. allocator_type
+		- _Alloc type의 typedef이다. vector가 사용하는 allocator object의 type을 표현한다.
+	3. get_allocator()
+		- vector가 사용하는 allocator 객체의 복사본을 리턴한다.
+	4. _M_impl
+		- vector 구현에 사용되는 멤버변수를 저장하는 _Vector_impl의 인스턴스
+	5. _M_allocate(size_t __n)
+		- _Vector_impl의 allocate함수를 호출하는 멤버함수인데, _Vector_impl이 allocator 객체를 상속하고있으므로, allocator 객체의 멤버함수 allocate를 호출하는 것이다.
+	6. _M_deallocate(_Tp *__p, size_t __n)
+		- 이전에 할당된 메모리를 해제한다.
 
 <br><br>
 
+### NVI design pattern
 
-# std::lexicographical_compare
+- _Vector_base의 디자인 패턴은 Non-Virtual Interface design pattern이다.
+- base class의 메서드가 재정의되는 방식을 제어한다.
+- [template method pattern](https://en.wikipedia.org/wiki/Template_method_pattern)과 밀접한 관련이 있다.
 
-```c++
-template< class InputIt1, class InputIt2 >
-bool lexicographical_compare( InputIt1 first1, InputIt1 last1,
-                              InputIt2 first2, InputIt2 last2 );
+<br>
 
-template< class InputIt1, class InputIt2, class Compare >
-bool lexicographical_compare( InputIt1 first1, InputIt1 last1,
-                              InputIt2 first2, InputIt2 last2, Compare comp );
-```
+- NVI pattern의 목적은 `public interface의 파괴없이` `클래스가 자신의 구현을 변경하도록 허용`하는 것이다.
+- `class의 implementation과 interface를 구분하고`, `implementation을 private화`함으로써 달성할 수 있다.
 
-- [first1, last1] 범위 내 값들이 [first2, last2]범위 내 값들보다 작은지 사전순으로 비교한다.
-	- < 연산자를 통해 비교한다.
-	- 또는 comp함수를 통해 비교한다.
+<br>
 
+- _Vector_base class template의 경우
+	- public interface는 비가상 멤버함수들로 구성되어있다.
+		- `get_allocator()`
+		- `_M_allocate()`
+		- `_M_deallocate()`
+	- 위 함수들은 _Alloc(std::allocator)의 allocate, deallocate를 통해 정의된다.
+		- allocate, deallocate 멤버함수는 항상 std::allocator에 의해 제공된다.
 
+- 위의 방식을 통해 vector는 `allocate, deallocate 멤버함수를 제공하는 여러개의 allocator class로 구현될 수 있다.`
+- `vector를 사용하는 client의 코드에 영향을 주지 않는다.`

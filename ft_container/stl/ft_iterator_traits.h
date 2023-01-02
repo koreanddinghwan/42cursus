@@ -16,7 +16,7 @@ template <typename Iterator> class iterator_traits {
 
 //템플릿 특수화
 template <typename T> class iterator_traits<T *> {
-  typedef ptrdiff_t difference_type;
+  typedef std::ptrdiff_t difference_type;
   typedef T value_type;
   typedef T *pointer;
   typedef T &reference;
@@ -25,7 +25,7 @@ template <typename T> class iterator_traits<T *> {
 
 //템플릿 특수화
 template <typename T> class iterator_traits<const T *> {
-  typedef ptrdiff_t difference_type;
+  typedef std::ptrdiff_t difference_type;
   typedef T value_type;
   typedef const T *pointer;
   typedef const T &reference;
