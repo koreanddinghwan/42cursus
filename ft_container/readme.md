@@ -279,6 +279,9 @@ bool lexicographical_compare( InputIt1 first1, InputIt1 last1,
 
 # std::vector
 
+## class diagram
+
+<img src="https://user-images.githubusercontent.com/76278794/210251887-be38a2af-deb4-4ed0-a4fe-c8688e8852ba.png">
 
 ## design pattern
 
@@ -690,5 +693,8 @@ template <typename _Tp, typename _Alloc> struct _Vector_base {
 	- 위 함수들은 _Alloc(std::allocator)의 allocate, deallocate를 통해 정의된다.
 		- allocate, deallocate 멤버함수는 항상 std::allocator에 의해 제공된다.
 
-- 위의 방식을 통해 vector는 `allocate, deallocate 멤버함수를 제공하는 여러개의 allocator class로 구현될 수 있다.`
+- _Vector_base는 자신의 _M_allocate, _M_deallocate메서드를 _Alloc(std::allocator)의 allocate, deallocate메서드로 다시 구현한다.
+- vector는 `allocate, deallocate 멤버함수를 제공하는 여러개의 allocator class로 구현될 수 있다.`
 - `vector를 사용하는 client의 코드에 영향을 주지 않는다.`
+
+
