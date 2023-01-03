@@ -83,9 +83,6 @@ C++98버전의 기능을 구현해야하므로, 이를 만족하는 최소한의
 
 <br><br>
 
-
-
-
 # KEYWORD
 
 ## SGI
@@ -108,7 +105,59 @@ default allocator인 alloc은 작은 객체를 위한 자유로운 리스트를 
 큰 요청사항(큰 메모리 할당)을 만족하고, 작은 객체로 분리될 수 있는 더 큰 크기의 메모리를 할당하기위해 시스템이 제공하는 allocator를 사용한다.  
 
 <br>
+<br>
 
+## std::allocator
+
+1. allocate 메서드
+
+```cpp
+_LIBCPP_NODISCARD_AFTER_CXX17 _LIBCPP_INLINE_VISIBILITY _LIBCPP_CONSTEXPR_AFTER_CXX17
+    const _Tp* allocate(size_t __n) {
+        if (__n > allocator_traits<allocator>::max_size(*this))
+            __throw_bad_array_new_length();
+        if (__libcpp_is_constant_evaluated()) {
+            return static_cast<const _Tp*>(::operator new(__n * sizeof(_Tp)));
+        } else {
+            return static_cast<const _Tp*>(_VSTD::__libcpp_allocate(__n * sizeof(_Tp), _LIBCPP_ALIGNOF(_Tp)));
+        }
+    }
+```
+
+<br>
+
+2. __libcpp_allocate 메서드
+
+```cpp
+inline _LIBCPP_INLINE_VISIBILITY
+void *__libcpp_allocate(size_t __size, size_t __align) {
+#ifndef _LIBCPP_HAS_NO_ALIGNED_ALLOCATION
+  if (__is_overaligned_for_new(__align)) {
+    const align_val_t __align_val = static_cast<align_val_t>(__align);
+    return __libcpp_operator_new(__size, __align_val);
+  }
+#endif
+
+  (void)__align;
+  return __libcpp_operator_new(__size);
+}
+```
+
+3. __libcpp_operator_new 메서드
+
+```cpp
+template <class ..._Args>
+_LIBCPP_INLINE_VISIBILITY
+void* __libcpp_operator_new(_Args ...__args) {
+#if __has_builtin(__builtin_operator_new) && __has_builtin(__builtin_operator_delete)
+  return __builtin_operator_new(__args...);
+#else
+  return ::operator new(__args...);
+#endif
+}
+```
+
+<br>
 
 # std::iterators_traits
 

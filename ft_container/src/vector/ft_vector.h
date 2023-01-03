@@ -1,8 +1,8 @@
 #ifndef FT_VECTOR_H
 #define FT_VECTOR_H
 
-#include "ft_iterator_traits.h"
-#include "ft_reverse_iterator.h"
+#include "../ft_iterator_traits.h"
+#include "../ft_reverse_iterator.h"
 #include <cstddef>
 #include <iterator>
 
@@ -85,6 +85,9 @@ protected:
   using _Base::_M_impl;
 
 public:
+  // default constructed allocator로 빈 컨테이너를 생성한다.
+  vector() {}
+
   explicit vector(const _Alloc &alloc);
 
   explicit vector(size_type count, const _Tp &value = _Tp(),
