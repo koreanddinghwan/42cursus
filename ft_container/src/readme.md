@@ -163,6 +163,8 @@ void* __libcpp_operator_new(_Args ...__args) {
 
 ## std::iterator
 
+### iterator design pattern
+
 - iterator는 list, stack, tree등 자료구조의 기본 표현을 노출하지 않고 컬렉션의 요소를 탐색할 수 있도록 하는 동작디자인 패턴이다.
 - 컬렉션? 
 	- 컬렉션은 프로그래밍에서 사용되는 데이터 유형 중 하나이다.
