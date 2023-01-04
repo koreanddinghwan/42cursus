@@ -6,8 +6,10 @@
 #include "ft_iterator_traits.hpp"
 #include "ft_reverse_iterator.hpp"
 #include <cstddef>
+#include <exception>
 #include <iostream>
 #include <iterator>
+#include <memory>
 
 // std::vector는 sequence design pattern의 예시이다.
 //
@@ -73,7 +75,7 @@ public:
 /* vector 클래스는 _Vector_base를 protected 상속
  * 인자로 받은 std::allocator를 vector_base의 template인자로 넘긴다.
  */
-template <typename _Tp, typename _Alloc = std::allocator<_Tp> >
+template <typename _Tp, typename _Alloc = std::allocator<_Tp>>
 class vector : protected _Vector_base<_Tp, _Alloc> {
 
   typedef _Vector_base<_Tp, _Alloc> _Base;
@@ -96,42 +98,73 @@ class vector : protected _Vector_base<_Tp, _Alloc> {
   typedef ptrdiff_t difference_type;
   typedef typename _Base::allocator_type allocator_type;
 
-protected:
-  // protected 상속한 vector_base의 멤버함수 2개와 멤버구조체 변수 M_impl을
-  // 가져온다.
-  using _Base::_M_allocate;
-  using _Base::_M_deallocate;
-  using _Base::_M_impl;
+  /*
+   * constructors and destructor
+   * */
 
 public:
   // default constructed allocator로 빈 컨테이너를 생성한다.
-  explicit vector(const _Alloc &__a = _Alloc()) : _Base(__a) {
-    std::cout << "empty vector container constructed" << std::endl;
-  }
+  explicit vector(const _Alloc &__a = _Alloc()) : _Base(__a) {}
 
+  /*
+   * @param __n : initial container size
+   * @param __v : value to fill container with
+   * */
   vector(size_t __n, const _Tp &__v, const _Alloc &__a = _Alloc())
       : _Base(__n, __a) {
-    std::cout << "fill vector container constructed" << std::endl;
+    std::uninitialized_fill_n(this->_M_impl._M_start, __n, __v, __a);
   }
 
-  explicit vector(size_type count) {}
-
+  vector(const vector &__x) : _Base(__x.size(), __x.get_allocator()) {
+    this->_M_impl._M_finish =
+        std::uninitialized_copy(__x.begin(), __x.end(), this->_M_impl._M_start);
+  }
 
   /*
    * enable_if
    * InputIt 가 is_integral이 false면 아래 생성자 호출되게
    * */
-  template <typename InputIt, 
-		   typename ft::enable_if< ft::is_integral<InputIt>::value, InputIt >::type
-			>
-  vector(InputIt __first, InputIt __last, const _Alloc &__a = _Alloc()) : _Base(__a)
-  {
-	  std::cout<<"template vector constructed"<<std::endl;
+  template <
+      typename InputIt,
+      typename ft::enable_if<ft::is_integral<InputIt>::value, InputIt>::type>
+  vector(InputIt __first, InputIt __last, const _Alloc &__a = _Alloc())
+      : _Base(__a) {
+    std::uninitialized_copy(__first, __last, this->_M_impl._M_start);
   }
 
-  vector(const vector &other) {}
+  ~vector() { this->_M_deallocate(); }
 
-  ~vector() { std::cout << "vector destructed" << std::endl; }
+  /*
+   * iterators
+   * */
+public:
+  iterator begin() { return iterator(this->_M_impl._M_start); }
+  const_iterator begin() const {
+    return const_iterator(this->_M_impl._M_finish);
+  }
+
+  iterator end() { return iterator(this->_M_impl._M_finish); }
+  const_iterator end() const { return const_iterator(this->_M_impl._M_finish); }
+
+  reverse_iterator rbegin() {
+    return reverse_iterator(this->_M_impl._M_finish);
+  }
+  const_reverse_iterator rbegin() const {
+    return const_reverse_iterator(this->_M_impl._M_finish);
+  }
+
+  reverse_iterator rend() { return reverse_iterator(this->_M_impl._M_start); }
+  const_reverse_iterator rend() const {
+    return const_reverse_iterator(this->_M_impl._M_start);
+  }
+
+  /*
+   * Element access
+   * */
+public:
+  reference at(size_type pos) {}
+
+  const_reference at(size_type pos) const;
 };
 
 } // namespace ft
