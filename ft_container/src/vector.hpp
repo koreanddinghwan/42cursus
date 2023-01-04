@@ -62,6 +62,7 @@ public:
 
 public:
   _Tp *_M_allocate(size_t __n) { return _M_impl.allocate(__n); }
+
   void _M_deallocate(_Tp *__p, size_t __n) {
     if (__p)
       _M_impl.deallocate(__p, __n);
@@ -87,10 +88,6 @@ class vector : protected _Vector_base<_Tp, _Alloc> {
   typedef typename _Alloc::const_pointer const_pointer;
   typedef typename _Alloc::reference reference;
   typedef typename _Alloc::const_reference const_reference;
-  /*
-   *  inline __normal_iterator(const __normal_iterator<_Iter, _Container> &__i)
-   *  : _M_current(__i.base()) {}
-   */
   typedef pointer iterator;
   typedef const_pointer const_iterator;
   typedef ft::reverse_iterator<iterator> reverse_iterator;
@@ -132,8 +129,10 @@ public:
     std::uninitialized_copy(__first, __last, this->_M_impl._M_start);
   }
 
+  /*!!!!*/
   ~vector() { this->_M_deallocate(); }
 
+  /*!!!!*/
   vector &operator=(const vector &__x) {
     if (this != __x) {
     }
@@ -198,6 +197,40 @@ public:
 
   _Tp *data() { return (this->begin()); }
   const _Tp *data() const { return (this->begin()); }
+
+  /*
+   * capacity
+   * */
+public:
+  bool empty() const {
+    if (this->size())
+      return true;
+    else
+      return false;
+  }
+
+  size_type size() const { return (this->end() - this->begin()); }
+  size_type max_size() const { return (size_type(-1) / sizeof(_Tp)); }
+  size_type capacity() const {
+    return (size_type(this->_M_impl._M_end_of_storage - this->begin()));
+  }
+
+  void reserve(size_type new_cap) {
+    if (!(new_cap > this->capacity()))
+      return;
+    if (new_cap > this->max_size())
+      throw std::length_error("std::length error");
+    // reallocation
+    pointer _new_pointer = this->_M_allocate(new_cap);
+    pointer _invalid_first = this->begin();
+    size_type _size = this->size();
+    std::uninitialized_copy_n(_invalid_first, this->size(), _new_pointer);
+    this->_M_deallocate(_invalid_first, this->_M_impl._M_end_of_storage -
+                                            this->_M_impl._M_start);
+    this->_M_impl._M_start = _new_pointer;
+    this->_M_impl._M_finish = _new_pointer + _size;
+    this->_M_impl._M_end_of_storage = _new_pointer + new_cap;
+  }
 };
 
 } // namespace ft
