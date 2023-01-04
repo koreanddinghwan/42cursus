@@ -138,6 +138,9 @@ public:
     }
     return (*this);
   }
+  /*!!!!*/
+  void assign(size_type count, const _Tp &value);
+  template <typename InputIt> void assign(InputIt first, InputIt last);
 
   /*
    * iterators
@@ -215,13 +218,13 @@ public:
     return (size_type(this->_M_impl._M_end_of_storage - this->begin()));
   }
 
-  void reserve(size_type new_cap) {
-    if (!(new_cap > this->capacity()))
+  void reserve(size_type __new_cap) {
+    if (!(__new_cap > this->capacity()))
       return;
-    if (new_cap > this->max_size())
+    if (__new_cap > this->max_size())
       throw std::length_error("std::length error");
     // reallocation
-    pointer _new_pointer = this->_M_allocate(new_cap);
+    pointer _new_pointer = this->_M_allocate(__new_cap);
     pointer _invalid_first = this->begin();
     size_type _size = this->size();
     std::uninitialized_copy_n(_invalid_first, this->size(), _new_pointer);
@@ -229,8 +232,25 @@ public:
                                             this->_M_impl._M_start);
     this->_M_impl._M_start = _new_pointer;
     this->_M_impl._M_finish = _new_pointer + _size;
-    this->_M_impl._M_end_of_storage = _new_pointer + new_cap;
+    this->_M_impl._M_end_of_storage = _new_pointer + __new_cap;
   }
+
+  /*
+   * modifiers
+   * */
+public:
+  void push_back(const value_type &__v);
+  void pop_back();
+
+  iterator insert(const_iterator pos, const _Tp &__v);
+  iterator insert(const_iterator pos, size_type count, const _Tp &__v);
+  template <class InputIt>
+  iterator insert(const_iterator pos, InputIt first, InputIt last);
+
+  iterator erase(iterator position);
+  iterator erase(iterator first, iterator last);
+  void swap(vector &x);
+  void clear();
 };
 
 } // namespace ft
