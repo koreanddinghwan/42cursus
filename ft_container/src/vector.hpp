@@ -10,6 +10,7 @@
 #include <iostream>
 #include <iterator>
 #include <memory>
+#include <stdexcept>
 
 // std::vector는 sequence design pattern의 예시이다.
 //
@@ -101,7 +102,6 @@ class vector : protected _Vector_base<_Tp, _Alloc> {
   /*
    * constructors and destructor
    * */
-
 public:
   // default constructed allocator로 빈 컨테이너를 생성한다.
   explicit vector(const _Alloc &__a = _Alloc()) : _Base(__a) {}
@@ -134,6 +134,12 @@ public:
 
   ~vector() { this->_M_deallocate(); }
 
+  vector &operator=(const vector &__x) {
+    if (this != __x) {
+    }
+    return (*this);
+  }
+
   /*
    * iterators
    * */
@@ -161,10 +167,37 @@ public:
   /*
    * Element access
    * */
-public:
-  reference at(size_type pos) {}
+protected:
+  void _M_out_of_range_check(size_type __pos) {
+    if (__pos >= this->size())
+      throw std::out_of_range("vector::_M_range_check");
+  }
 
-  const_reference at(size_type pos) const;
+public:
+  reference at(size_type __pos) {
+    _M_out_of_range_check(__pos);
+    return (this->_M_impl._M_start[__pos]);
+  }
+  const_reference at(size_type __pos) const {
+    _M_out_of_range_check(__pos);
+    return (this->_M_impl._M_start[__pos]);
+  }
+
+  reference operator[](size_type __pos) {
+    return *(this->_M_impl._M_start + __pos);
+  }
+  const_reference operator[](size_type __pos) const {
+    return *(this->_M_impl._M_start + __pos);
+  }
+
+  reference front() { return *(this->_M_impl._M_start); }
+  const_reference front() const { return *(this->_M_impl._M_start); }
+
+  reference back() { return *(this->_M_impl._M_finish - 1); }
+  const_reference back() const { return *(this->_M_impl._M_finish - 1); }
+
+  _Tp *data() { return (this->begin()); }
+  const _Tp *data() const { return (this->begin()); }
 };
 
 } // namespace ft
