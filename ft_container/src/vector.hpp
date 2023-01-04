@@ -1,11 +1,13 @@
 #ifndef FT_VECTOR_H
 #define FT_VECTOR_H
 
+#include "ft_enable_if.hpp"
+#include "ft_is_integral.hpp"
 #include "ft_iterator_traits.hpp"
 #include "ft_reverse_iterator.hpp"
 #include <cstddef>
-#include <iterator>
 #include <iostream>
+#include <iterator>
 
 // std::vector는 sequence design pattern의 예시이다.
 //
@@ -26,8 +28,8 @@ template <typename _Tp, typename _Alloc> struct _Vector_base {
      * */
     _Vector_impl(_Alloc const &__a)
         : _Alloc(__a), _M_start(0), _M_finish(0), _M_end_of_storage(0) {
-	    std::cout<<"vector_impl constructed"<<std::endl;
-	}
+      std::cout << "vector_impl constructed" << std::endl;
+    }
   };
 
   /*
@@ -38,7 +40,7 @@ public:
   typedef _Alloc allocator_type;
 
   _Vector_base(size_t __n, const allocator_type &__a) : _M_impl(__a) {
-      std::cout<<"vector_base constructor"<<std::endl;
+    std::cout << "vector_base constructor" << std::endl;
     this->_M_impl._M_start = this->_M_allocate(__n);
     this->_M_impl._M_finish =
         this->_M_impl._M_start; //_M_finish를 _M_start로 초기화
@@ -46,11 +48,11 @@ public:
   }
 
   _Vector_base(const allocator_type &__a) : _M_impl(__a) {
-      std::cout<<"empty vector base constructed"<<std::endl;
+    std::cout << "empty vector base constructed" << std::endl;
   }
 
   ~_Vector_base() {
-      std::cout<<"vector base destructed"<<std::endl;
+    std::cout << "vector base destructed" << std::endl;
     _M_deallocate(this->_M_impl._M_start,
                   this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
   }
@@ -82,10 +84,10 @@ class vector : protected _Vector_base<_Tp, _Alloc> {
   typedef typename _Alloc::const_pointer const_pointer;
   typedef typename _Alloc::reference reference;
   typedef typename _Alloc::const_reference const_reference;
-  /*  
+  /*
    *  inline __normal_iterator(const __normal_iterator<_Iter, _Container> &__i)
    *  : _M_current(__i.base()) {}
-*/
+   */
   typedef pointer iterator;
   typedef const_pointer const_iterator;
   typedef ft::reverse_iterator<iterator> reverse_iterator;
@@ -103,28 +105,33 @@ protected:
 
 public:
   // default constructed allocator로 빈 컨테이너를 생성한다.
-  explicit vector(const _Alloc &__a = _Alloc()) : _Base(__a)
+  explicit vector(const _Alloc &__a = _Alloc()) : _Base(__a) {
+    std::cout << "empty vector container constructed" << std::endl;
+  }
+
+  vector(size_t __n, const _Tp &__v, const _Alloc &__a = _Alloc())
+      : _Base(__n, __a) {
+    std::cout << "fill vector container constructed" << std::endl;
+  }
+
+  explicit vector(size_type count) {}
+
+
+  /*
+   * enable_if
+   * InputIt 가 is_integral이 false면 아래 생성자 호출되게
+   * */
+  template <typename InputIt, 
+		   typename ft::enable_if< ft::is_integral<InputIt>::value, InputIt >::type
+			>
+  vector(InputIt __first, InputIt __last, const _Alloc &__a = _Alloc()) : _Base(__a)
   {
-      std::cout<<"empty vector container constructed"<<std::endl;
+	  std::cout<<"template vector constructed"<<std::endl;
   }
 
-  explicit vector(size_type __n, const _Tp &__v = _Tp(),
-                  const _Alloc &__a = _Alloc()) : _Base(__n, __a)
-  {
-      std::cout<<"fill vector container constructed"<<std::endl;
-  }
+  vector(const vector &other) {}
 
-  explicit vector(size_type count)
-  {}
-
-  template <class InputIt>
-  vector(InputIt first, InputIt last, const _Alloc &alloc = _Alloc());
-
-  vector(const vector &other){}
-
-  ~vector(){
-      std::cout<<"vector destructed"<<std::endl;
-  }
+  ~vector() { std::cout << "vector destructed" << std::endl; }
 };
 
 } // namespace ft
