@@ -1,0 +1,6 @@
+[submodule "cub3d"]
+	path = cub3d
+	url = https://github.com/koreanddinghwan/cub3d
+[submodule "minishell"]
+	path = minishell
+	url = https://github.com/koreanddinghwan/minishell
