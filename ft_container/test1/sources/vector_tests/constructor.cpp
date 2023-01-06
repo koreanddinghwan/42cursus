@@ -25,6 +25,7 @@ template <typename T>
 std::vector<int> constructor_test(_vector<T> vector) {
     std::vector<int> v;
 	_vector<int> tmp0(vector);
+
     _vector<int> tmp(1000 * _ratio, 4), tmp2(1000 * _ratio, 5);
     tmp = tmp2;
     _vector<int> tmp3(tmp);

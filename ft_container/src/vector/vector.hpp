@@ -20,7 +20,7 @@ namespace ft {
 template <typename _Tp, typename _Alloc> struct _Vector_base {
   // vector_base의 data member 가지는 Vector_impl 정의
   // Alloc을 상속해 allocate, deallocate를 사용할 수 있다.
-  struct _Vector_impl : protected _Alloc {
+  struct _Vector_impl : public _Alloc {
     _Tp *_M_start;
     _Tp *_M_finish;
     _Tp *_M_end_of_storage;
@@ -35,10 +35,13 @@ template <typename _Tp, typename _Alloc> struct _Vector_base {
   /*
    * constructor, destructor
    * */
-public:
+protected:
   _Vector_impl _M_impl;
   typedef _Alloc allocator_type;
 
+  /*
+   * important
+   * */
   _Vector_base(size_t __n, const allocator_type &__a) : _M_impl(__a) {
     this->_M_impl._M_start = this->_M_allocate(__n);
     this->_M_impl._M_finish =
@@ -54,12 +57,16 @@ public:
                   this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
   }
 
-public:
+protected:
   _Tp *_M_allocate(size_t __n) { return _M_impl.allocate(__n); }
 
   void _M_deallocate(_Tp *__p, size_t __n) {
     if (__p)
       _M_impl.deallocate(__p, __n);
+  }
+
+  void _M_destroy(_Tp *__p) {
+	  _M_impl.destroy(__p);
   }
 
   //_M_impl 의 부모클래스 _Alloc으로 업캐스팅해서 allocator를 리턴한다.
@@ -72,24 +79,24 @@ public:
  * 인자로 받은 std::allocator를 vector_base의 template인자로 넘긴다.
  */
 template <typename _Tp, typename _Alloc = std::allocator<_Tp> >
-class vector : public _Vector_base<_Tp, _Alloc> {
+class vector : protected _Vector_base<_Tp, _Alloc> {
 private:  
   typedef _Vector_base<_Tp, _Alloc> _Base;
   typedef vector<_Tp, _Alloc> vector_type;
 
 public: 
-  typedef _Tp value_type;
-  typedef value_type pointer;
-  typedef const value_type const_pointer;
-  typedef value_type& reference;
-  typedef const value_type& const_reference;
-  typedef value_type* iterator;
-  typedef const value_type* const_iterator;
-  typedef ft::reverse_iterator<iterator> reverse_iterator;
-  typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
   typedef typename _Base::allocator_type allocator_type;
+  typedef _Tp value_type;
+  typedef typename _Alloc::pointer pointer;
+  typedef typename _Alloc::const_pointer const_pointer;
+  typedef value_type& reference;
+  typedef const value_type& const_reference;
+  typedef ft::random_access_iterator<_Tp> iterator;
+  typedef ft::random_access_iterator<_Tp> const_iterator;
+  typedef typename ft::reverse_iterator<iterator> reverse_iterator;
+  typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
   /*
    * constructors and destructor
@@ -102,52 +109,72 @@ public:
    * @param __n : initial container size
    * @param __v : value to fill container with
    * */
-  vector(size_t __n, const _Tp &__v = _Tp(), const _Alloc &__a = _Alloc())
+  explicit vector(size_t __n, const _Tp &__v = _Tp(), const _Alloc &__a = _Alloc())
       : _Base(__n, __a) {
-    std::uninitialized_fill_n(this->_M_impl._M_start, __n, __v);
+    std::fill_n(this->_M_impl._M_start, __n, __v);
+	this->_M_impl._M_finish = this->begin() + __n;
   }
 
   vector(const vector &__x) : _Base(__x.size(), __x.get_allocator()) {
-    this->_M_impl._M_finish =
-        std::uninitialized_copy(__x.begin(), __x.end(), this->_M_impl._M_start);
+    this->_M_impl._M_finish = std::copy(__x.begin(), __x.end(), this->_M_impl._M_start);
   }
 
   /*
    * enable_if
    * InputIt 가 is_integral이 false면 아래 생성자 호출되게
    * */
-  template <
-      typename InputIt,
-      typename ft::enable_if<ft::is_integral<InputIt>::value, InputIt>::type>
+  template <typename InputIt>
   vector(InputIt __first, InputIt __last, const _Alloc &__a = _Alloc())
       : _Base(__a) {
-    std::uninitialized_copy(__first, __last, this->_M_impl._M_start);
+		typedef typename ft::enable_if<ft::is_integral<InputIt>::value, InputIt>::type _Integral;
+	  _M_initialize_dispatch(__first, __last, _Integral());
+	  }
+
+  ~vector() {
+	  this->_M_destroy(this->_M_impl._M_start);
   }
 
-  template<class InputIt>
-  vector(InputIt __first, InputIt __last, const _Alloc &__a = _Alloc())
-      : _Base(__a) {
-    std::uninitialized_copy(__first, __last, this->_M_impl._M_start);
-  }
-
-
-  ~vector() {}
-
-  /*!!!!*/
+  /*
+   * operator= do not care about capacity
+   * */
   vector &operator=(const vector &__x) {
-    if (this != __x) {
+    if (this != &__x) {
+		size_type __x_size = __x.size();
+		if (__x_size > this->capacity()) {
+			size_type __x_size = __x.size();
+			iterator __new = _M_allocate_copy(__x.begin(), __x.end(), __x_size);
+			this->_M_destroy(this->_M_impl._M_start);
+			this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
+			this->_M_impl._M_start = &(*__new);
+			this->_M_impl._M_end_of_storage = &(*(__new + __x_size));
+		} else {
+			std::copy(__x.begin(), __x.end(), this->_M_impl._M_start);
+		}
+		this->_M_impl._M_finish = this->_M_impl._M_start + __x_size;
     }
     return (*this);
   }
-  /*!!!!*/
-  void assign(size_type count, const _Tp &value);
-  template <typename InputIt> void assign(InputIt first, InputIt last){}
+
+
+  void assign(size_type __n, const _Tp &__v) {
+	iterator _new = this->_M_allocate(__n);
+	std::fill_n(_new, __n, __v);
+	this->_M_destroy(this->_M_impl._M_start);
+	this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
+	this->_M_impl._M_start = _new;
+	this->_M_impl._M_finish = _new + __n;
+	this->_M_impl._M_end_of_storage = _new + __n;
+  }
+
+
+  template <typename InputIt> void assign(InputIt first, InputIt last) {
+  }
 
   /*
    * iterators
    * */
 public:
-  iterator begin() { return iterator(this->_M_impl._M_start); }
+  iterator begin() { return (this->_M_impl._M_start); }
   const_iterator begin() const {
     return const_iterator(this->_M_impl._M_start);
   }
@@ -213,10 +240,10 @@ public:
       return false;
   }
 
-  size_type size() const { return (this->end() - this->begin()); }
-  size_type max_size() const { return (size_type(-1) / sizeof(_Tp)); }
+  size_type size() const { return static_cast<size_type>(this->_M_impl._M_finish - this->_M_impl._M_start); }
+  size_type max_size() const { return static_cast<size_type>(size_type(-1) / sizeof(_Tp)); }
   size_type capacity() const {
-    return (size_type(this->_M_impl._M_end_of_storage - this->begin()));
+    return (size_type(this->_M_impl._M_end_of_storage - this->_M_impl._M_start));
   }
 
   void reserve(size_type __new_cap) {
@@ -228,8 +255,8 @@ public:
     iterator _new_pointer = this->_M_allocate(__new_cap);
     iterator _invalid_first = this->_M_impl._M_start;
     size_type _size = this->size();
-    std::uninitialized_copy_n(_invalid_first, _size, _new_pointer);
-    _invalid_first->~_Tp();
+    std::copy(_invalid_first, _size, _new_pointer);
+	this->_M_destroy(this->_M_impl._M_start);
     this->_M_deallocate(_invalid_first, this->_M_impl._M_end_of_storage -
                                             this->_M_impl._M_start);
     this->_M_impl._M_start = _new_pointer;
@@ -250,23 +277,42 @@ public:
    * modifiers
    * */
 private:
+  template<typename _Integeral>
+    void _M_initialize_dispatch(_Integeral __n, _Integeral __v, true_type)
+    {
+		std::fill_n(this->_M_impl._M_start, __n, __v);
+		this->_M_impl._M_finish = this->begin() + __n;
+    }
+
+  template<typename _It>
+    void _M_initialize_dispatch(_It __first, _It __last, false_type)
+    {
+		size_type _sz = static_cast<difference_type>(__last - __first);
+		this->_M_impl._M_finish = std::copy(__first, __last, this->begin());
+    }
+
+	iterator _M_allocate_copy(const_iterator __first, const_iterator __last, size_type __n) 
+	{
+		iterator _result = this->_M_allocate(__n);
+		std::copy(__first, __last, _result);
+		return (_result);
+	}
+
   /*
    * copy from rend to begin + pos
    * and @fill __n number of element with __v
    * */
   void _M_insert_fill(const_iterator __pos, const _Tp &__v, size_type __n) {
-    _M_move(__pos, __n);
+    _M_move_backward(__pos, __n);
 
     // copy
-    for (size_type i = 0; i < __n; i++) {
-      *(this->begin() + __pos + i) = __v;
-    }
+	std::fill_n(this->begin(), __n, __v);
   }
 
   /*
    * move __pos item to __pos + __n
    * */
-  void _M_move(const_iterator __pos, size_type __n) {
+  void _M_move_backward(const_iterator __pos, size_type __n) {
     reverse_iterator __past_rend = this->rend()++;
     size_type __new_size = this->size() + __n;
     if (__new_size > this->capacity()) {
@@ -288,7 +334,7 @@ private:
                        __InputIt __last) {
     difference_type __d = std::distance(__first, __last);
 
-    _M_move(__pos, __d);
+    _M_move_backward(__pos, __d);
     // copy
     for (difference_type i = 0; i < __d; i++, __first++) {
       *(this->begin() + __pos + i) = *(__first);
@@ -370,6 +416,48 @@ public:
   /* void swap(vector &x) {} */
   void clear() {}
 };
+
+
+
+template< class _Tp, class _Alloc >
+bool operator==( const std::vector<_Tp,_Alloc>& lhs,
+                 const std::vector<_Tp,_Alloc>& rhs ) {
+	return (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+}
+
+template< class _Tp, class _Alloc >
+bool operator!=( const std::vector<_Tp,_Alloc>& lhs,
+                 const std::vector<_Tp,_Alloc>& rhs ) {
+	return (!(lhs == rhs));
+}
+
+template< class _Tp, class _Alloc >
+bool operator<( const std::vector<_Tp,_Alloc>& lhs,
+                const std::vector<_Tp,_Alloc>& rhs ) {
+	return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+}
+
+template< class _Tp, class _Alloc >
+bool operator<=( const std::vector<_Tp,_Alloc>& lhs,
+                 const std::vector<_Tp,_Alloc>& rhs ) {
+	return !(rhs > lhs);
+}
+
+template< class _Tp, class _Alloc >
+bool operator>( const std::vector<_Tp,_Alloc>& lhs,
+                const std::vector<_Tp,_Alloc>& rhs ) {
+	return (rhs < lhs);
+}
+
+template< class _Tp, class _Alloc >
+bool operator>=( const std::vector<_Tp,_Alloc>& lhs,
+                 const std::vector<_Tp,_Alloc>& rhs ) {
+	return !(lhs < rhs);
+}
+
+
+
+
 
 } // namespace ft
 

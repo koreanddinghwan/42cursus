@@ -6,29 +6,32 @@
 
 namespace ft {
 
-template <class Iterator> struct iterator_traits {
-  typedef typename Iterator::difference_type difference_type;
-  typedef typename Iterator::value_type value_type;
-  typedef typename Iterator::pointer pointer;
-  typedef typename Iterator::reference reference;
-  typedef typename Iterator::iterator_category iterator_category;
+template <class _Iter> 
+struct iterator_traits {
+  typedef typename _Iter::difference_type difference_type;
+  typedef typename _Iter::value_type value_type;
+  typedef typename _Iter::pointer pointer;
+  typedef typename _Iter::reference reference;
+  typedef typename _Iter::iterator_category iterator_category;
 };
 
 //템플릿 특수화
-template <class T> struct iterator_traits<T *> {
+template <class _Tp> 
+struct iterator_traits<_Tp *> {
   typedef ptrdiff_t difference_type;
-  typedef T value_type;
-  typedef T *pointer;
-  typedef T &reference;
+  typedef _Tp value_type;
+  typedef _Tp* pointer;
+  typedef _Tp& reference;
   typedef std::random_access_iterator_tag iterator_category;
 };
 
 //템플릿 특수화
-template <class T> class iterator_traits<const T *> {
+template <class _Tp> 
+struct iterator_traits<const _Tp *> {
   typedef ptrdiff_t difference_type;
-  typedef T value_type;
-  typedef const T *pointer;
-  typedef const T &reference;
+  typedef _Tp value_type;
+  typedef const _Tp* pointer;
+  typedef const _Tp& reference;
   typedef std::random_access_iterator_tag iterator_category;
 };
 
