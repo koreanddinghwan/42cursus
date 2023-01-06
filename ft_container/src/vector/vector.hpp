@@ -123,10 +123,10 @@ public:
    * enable_if
    * InputIt 가 is_integral이 false면 아래 생성자 호출되게
    * */
-  template <typename InputIt>
-  vector(InputIt __first, InputIt __last, const _Alloc &__a = _Alloc())
+  template <typename _It>
+  vector(_It __first, _It __last, const _Alloc &__a = _Alloc())
       : _Base(__a) {
-		typedef typename ft::enable_if<ft::is_integral<InputIt>::value, InputIt>::type _Integral;
+	  typedef typename ft::is_integral<_It>::type _Integral;
 	  _M_initialize_dispatch(__first, __last, _Integral());
 	  }
 
@@ -253,15 +253,17 @@ public:
       throw std::length_error("std::length error");
     // reallocation
     iterator _new_pointer = this->_M_allocate(__new_cap);
-    iterator _invalid_first = this->_M_impl._M_start;
+    iterator _invalid_first = this->begin();
+    iterator _invalid_last = this->end();
     size_type _size = this->size();
-    std::copy(_invalid_first, _size, _new_pointer);
+
+    std::copy(_invalid_first, _invalid_last, _new_pointer);
 	this->_M_destroy(this->_M_impl._M_start);
-    this->_M_deallocate(_invalid_first, this->_M_impl._M_end_of_storage -
+    this->_M_deallocate(&(*_invalid_first), this->_M_impl._M_end_of_storage -
                                             this->_M_impl._M_start);
-    this->_M_impl._M_start = _new_pointer;
-    this->_M_impl._M_finish = _new_pointer + _size;
-    this->_M_impl._M_end_of_storage = _new_pointer + __new_cap;
+    this->_M_impl._M_start = &(*_new_pointer);
+    this->_M_impl._M_finish = &(*(_new_pointer + _size));
+    this->_M_impl._M_end_of_storage = &(*(_new_pointer + __new_cap));
   }
 
   /*!!!!*/
@@ -278,17 +280,21 @@ public:
    * */
 private:
   template<typename _Integeral>
-    void _M_initialize_dispatch(_Integeral __n, _Integeral __v, true_type)
+    void _M_initialize_dispatch(_Integeral __n, _Integeral __v, ft::true_type)
     {
+		this->_M_impl._M_start = this->_M_allocate(__n);
+		this->_M_impl._M_end_of_storage = this->_M_impl._M_start + __n;
 		std::fill_n(this->_M_impl._M_start, __n, __v);
-		this->_M_impl._M_finish = this->begin() + __n;
+		this->_M_impl._M_finish = this->_M_impl._M_start + __n;
     }
 
   template<typename _It>
-    void _M_initialize_dispatch(_It __first, _It __last, false_type)
+    void _M_initialize_dispatch(_It __first, _It __last, ft::false_type)
     {
-		size_type _sz = static_cast<difference_type>(__last - __first);
-		this->_M_impl._M_finish = std::copy(__first, __last, this->begin());
+		size_type _n = __last - __first;
+		this->_M_impl._M_start = this->_M_allocate(_n);
+		this->_M_impl._M_finish = &(*std::copy(__first, __last, this->begin()));
+		this->_M_impl._M_end_of_storage = this->_M_impl._M_finish;
     }
 
 	iterator _M_allocate_copy(const_iterator __first, const_iterator __last, size_type __n) 
@@ -321,7 +327,7 @@ private:
     }
 
     reverse_iterator __cur_rend = this->rend()++;
-    for (size_type i = 0; i < this->size() - __pos; i++) {
+    for (size_type i = 0; i < this->end() - __pos; i++) {
       *(__cur_rend + i) = *(__past_rend + i);
     }
   }
@@ -336,10 +342,22 @@ private:
 
     _M_move_backward(__pos, __d);
     // copy
+	
     for (difference_type i = 0; i < __d; i++, __first++) {
-      *(this->begin() + __pos + i) = *(__first);
+      *(__pos + i) = *(__first);
     }
   }
+
+  template<typename _It>
+	void _M_insert_dispatch(const_iterator __pos, _It __first, _It __last, ft::false_type){
+		this->_M_insert_range<_It>(__pos, __first, __last);
+	}
+
+  template<typename _Integral>
+	void _M_insert_dispatch(const_iterator __pos, _Integral __n, const _Tp &__v, ft::true_type){
+		this->_M_insert_fill(__pos, __v, __n);
+	}
+
 
 public:
   void push_back(const value_type &__v) {
@@ -360,24 +378,22 @@ public:
    * */
   iterator insert(const_iterator __pos, const _Tp &__v) {
     this->_M_insert_fill(__pos, __v, 1);
-    return (this->begin() + __pos);
+    return (__pos);
   }
 
   iterator insert(const_iterator __pos, size_type __n, const _Tp &__v) {
-    this->_M_insert_fill(__pos, __v, __n);
-    if (__n == 0)
-      return (__pos);
-    else
-      return (this->begin() + __pos);
+	this->_M_insert_fill(__pos, __v, __n);
+	return (__pos);
   }
 
-  template <class InputIt>
-  iterator insert(const_iterator __pos, InputIt __first, InputIt __last) {
-    _M_insert_range<InputIt>(__pos, __first, __last);
+  template <class _It>
+  iterator insert(const_iterator __pos, _It __first, _It __last) {
+	 typedef typename ft::is_integral<_It>::type _Integral;
+	 _M_insert_dispatch(__pos, __first, __last, _Integral());
     if (__first == __last)
       return (__pos);
     else
-      return (this->begin() + __pos);
+      return (__pos);
   }
 
   /*
@@ -420,38 +436,38 @@ public:
 
 
 template< class _Tp, class _Alloc >
-bool operator==( const std::vector<_Tp,_Alloc>& lhs,
-                 const std::vector<_Tp,_Alloc>& rhs ) {
+bool operator==( const vector<_Tp,_Alloc>& lhs,
+                 const vector<_Tp,_Alloc>& rhs ) {
 	return (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 }
 
 template< class _Tp, class _Alloc >
-bool operator!=( const std::vector<_Tp,_Alloc>& lhs,
-                 const std::vector<_Tp,_Alloc>& rhs ) {
+bool operator!=( const vector<_Tp,_Alloc>& lhs,
+                 const vector<_Tp,_Alloc>& rhs ) {
 	return (!(lhs == rhs));
 }
 
 template< class _Tp, class _Alloc >
-bool operator<( const std::vector<_Tp,_Alloc>& lhs,
-                const std::vector<_Tp,_Alloc>& rhs ) {
+bool operator<( const vector<_Tp,_Alloc>& lhs,
+                const vector<_Tp,_Alloc>& rhs ) {
 	return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 }
 
 template< class _Tp, class _Alloc >
-bool operator<=( const std::vector<_Tp,_Alloc>& lhs,
-                 const std::vector<_Tp,_Alloc>& rhs ) {
+bool operator<=( const vector<_Tp,_Alloc>& lhs,
+                 const vector<_Tp,_Alloc>& rhs ) {
 	return !(rhs > lhs);
 }
 
 template< class _Tp, class _Alloc >
-bool operator>( const std::vector<_Tp,_Alloc>& lhs,
-                const std::vector<_Tp,_Alloc>& rhs ) {
+bool operator>( const vector<_Tp,_Alloc>& lhs,
+                const vector<_Tp,_Alloc>& rhs ) {
 	return (rhs < lhs);
 }
 
 template< class _Tp, class _Alloc >
-bool operator>=( const std::vector<_Tp,_Alloc>& lhs,
-                 const std::vector<_Tp,_Alloc>& rhs ) {
+bool operator>=( const vector<_Tp,_Alloc>& lhs,
+                 const vector<_Tp,_Alloc>& rhs ) {
 	return !(lhs < rhs);
 }
 

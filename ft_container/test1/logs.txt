@@ -1,464 +1,284 @@
-In file included from ../vector_tests/assign().cpp:2:
-In file included from ../vector_tests/__service.ipp:2:
-../vector_tests/../../../src/vector/vector.hpp:62:15: error: 'deallocate' is a protected member of 'std::__1::allocator<int>'
-      _M_impl.deallocate(__p, __n);
-              ^
-../vector_tests/../../../src/vector/vector.hpp:53:5: note: in instantiation of member function 'ft::_Vector_base<int, std::__1::allocator<int> >::_M_deallocate' requested here
-    _M_deallocate(this->_M_impl._M_start,
-    ^
-../vector_tests/../../../src/vector/vector.hpp:99:12: note: in instantiation of member function 'ft::_Vector_base<int, std::__1::allocator<int> >::~_Vector_base' requested here
-  explicit vector(const _Alloc &__a = _Alloc()) : _Base(__a) {}
-           ^
-../vector_tests/__service.ipp:15:16: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::vector' requested here
-  _vector<int> my_vector;
-               ^
-../vector_tests/assign().cpp:46:10: note: in instantiation of function template specialization 'run_vector_unit_test<int>' requested here
-    exit(run_vector_unit_test<int>("assign()", assign_test, assign_test));
-         ^
-../vector_tests/../../../src/vector/vector.hpp:23:25: note: constrained by protected inheritance here
-  struct _Vector_impl : protected _Alloc {
-                        ^~~~~~~~~~~~~~~~
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:1871:36: note: member is declared here
-    _LIBCPP_INLINE_VISIBILITY void deallocate(pointer __p, size_type __n) _NOEXCEPT
-                                   ^
-In file included from ../vector_tests/assign().cpp:2:
-In file included from ../vector_tests/__service.ipp:2:
-../vector_tests/../../../src/vector/vector.hpp:62:7: error: cannot cast 'ft::_Vector_base<int, std::__1::allocator<int> >::_Vector_impl' to its protected base class 'std::__1::allocator<int>'
-      _M_impl.deallocate(__p, __n);
-      ^
-../vector_tests/../../../src/vector/vector.hpp:23:25: note: declared protected here
-  struct _Vector_impl : protected _Alloc {
-                        ^~~~~~~~~~~~~~~~
-../vector_tests/../../../src/vector/vector.hpp:216:48: error: invalid operands to binary expression ('ft::vector<int, std::__1::allocator<int> >::const_iterator' (aka '__wrap_iter<std::iterator<std::random_access_iterator_tag, int> >') and 'ft::vector<int, std::__1::allocator<int> >::const_iterator')
-  size_type size() const { return (this->end() - this->begin()); }
-                                   ~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
-../vector_tests/../../../src/vector/vector.hpp:110:41: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::size' requested here
-  vector(const vector &__x) : _Base(__x.size(), __x.get_allocator()) {
-                                        ^
-../vector_tests/__service.ipp:19:16: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::vector' requested here
-  res2 = func2(my_vector);
-               ^
-../vector_tests/assign().cpp:46:10: note: in instantiation of function template specialization 'run_vector_unit_test<int>' requested here
-    exit(run_vector_unit_test<int>("assign()", assign_test, assign_test));
-         ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iterator:865:1: note: candidate template ignored: could not match 'reverse_iterator' against '__wrap_iter'
-operator-(const reverse_iterator<_Iter1>& __x, const reverse_iterator<_Iter2>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iterator:1301:1: note: candidate template ignored: could not match 'move_iterator' against '__wrap_iter'
-operator-(const move_iterator<_Iter1>& __x, const move_iterator<_Iter2>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iterator:1713:1: note: candidate template ignored: could not match 'std::__1::__wrap_iter' against 'ft::__wrap_iter'
-operator-(const __wrap_iter<_Iter1>& __x, const __wrap_iter<_Iter2>& __y) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:558:11: note: candidate template ignored: could not match 'fpos' against '__wrap_iter'
-streamoff operator-(const fpos<_StateT>& __x, const fpos<_StateT>& __y)
-          ^
-../vector_tests/../../../src/vector/../utils/ft_reverse_iterator.hpp:137:1: note: candidate template ignored: could not match 'reverse_iterator' against '__wrap_iter'
-operator-(const reverse_iterator<Iterator1> &lhs,
-^
-In file included from ../vector_tests/assign().cpp:2:
-In file included from ../vector_tests/__service.ipp:2:
-../vector_tests/../../../src/vector/vector.hpp:67:41: error: cannot cast 'const ft::_Vector_base<int, std::__1::allocator<int> >::_Vector_impl' to its protected base class 'const std::__1::allocator<int>'
-    return *static_cast<const _Alloc *>(&this->_M_impl);
-                                        ^
-../vector_tests/../../../src/vector/vector.hpp:110:53: note: in instantiation of member function 'ft::_Vector_base<int, std::__1::allocator<int> >::get_allocator' requested here
-  vector(const vector &__x) : _Base(__x.size(), __x.get_allocator()) {
-                                                    ^
-../vector_tests/__service.ipp:19:16: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::vector' requested here
-  res2 = func2(my_vector);
-               ^
-../vector_tests/assign().cpp:46:10: note: in instantiation of function template specialization 'run_vector_unit_test<int>' requested here
-    exit(run_vector_unit_test<int>("assign()", assign_test, assign_test));
-         ^
-../vector_tests/../../../src/vector/vector.hpp:23:25: note: declared protected here
-  struct _Vector_impl : protected _Alloc {
-                        ^~~~~~~~~~~~~~~~
-../vector_tests/../../../src/vector/vector.hpp:58:49: error: 'allocate' is a protected member of 'std::__1::allocator<int>'
-  _Tp *_M_allocate(size_t __n) { return _M_impl.allocate(__n); }
-                                                ^
-../vector_tests/../../../src/vector/vector.hpp:43:36: note: in instantiation of member function 'ft::_Vector_base<int, std::__1::allocator<int> >::_M_allocate' requested here
-    this->_M_impl._M_start = this->_M_allocate(__n);
-                                   ^
-../vector_tests/../../../src/vector/vector.hpp:110:31: note: in instantiation of member function 'ft::_Vector_base<int, std::__1::allocator<int> >::_Vector_base' requested here
-  vector(const vector &__x) : _Base(__x.size(), __x.get_allocator()) {
-                              ^
-../vector_tests/__service.ipp:19:16: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::vector' requested here
-  res2 = func2(my_vector);
-               ^
-../vector_tests/assign().cpp:46:10: note: in instantiation of function template specialization 'run_vector_unit_test<int>' requested here
-    exit(run_vector_unit_test<int>("assign()", assign_test, assign_test));
-         ^
-../vector_tests/../../../src/vector/vector.hpp:23:25: note: constrained by protected inheritance here
-  struct _Vector_impl : protected _Alloc {
-                        ^~~~~~~~~~~~~~~~
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:1864:13: note: member is declared here
-    pointer allocate(size_type __n, allocator<void>::const_pointer = 0)
-            ^
-In file included from ../vector_tests/assign().cpp:2:
-In file included from ../vector_tests/__service.ipp:2:
-../vector_tests/../../../src/vector/vector.hpp:58:41: error: cannot cast 'ft::_Vector_base<int, std::__1::allocator<int> >::_Vector_impl' to its protected base class 'std::__1::allocator<int>'
-  _Tp *_M_allocate(size_t __n) { return _M_impl.allocate(__n); }
-                                        ^
-../vector_tests/../../../src/vector/vector.hpp:23:25: note: declared protected here
-  struct _Vector_impl : protected _Alloc {
-                        ^~~~~~~~~~~~~~~~
-../vector_tests/../../../src/vector/vector.hpp:152:12: error: no matching conversion for functional-style cast from 'int *const' to 'ft::vector<int, std::__1::allocator<int> >::const_iterator' (aka '__wrap_iter<std::iterator<std::random_access_iterator_tag, int> >')
-    return const_iterator(this->_M_impl._M_start);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../vector_tests/../../../src/vector/vector.hpp:112:37: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::begin' requested here
-        std::uninitialized_copy(__x.begin(), __x.end(), this->_M_impl._M_start);
-                                    ^
-../vector_tests/__service.ipp:19:16: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::vector' requested here
-  res2 = func2(my_vector);
-               ^
-../vector_tests/assign().cpp:46:10: note: in instantiation of function template specialization 'run_vector_unit_test<int>' requested here
-    exit(run_vector_unit_test<int>("assign()", assign_test, assign_test));
-         ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit copy constructor) not viable: no known conversion from 'int *const' to 'const ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' for 1st argument
-class __wrap_iter{
-      ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit default constructor) not viable: requires 0 arguments, but 1 was provided
-In file included from ../vector_tests/assign().cpp:2:
-In file included from ../vector_tests/__service.ipp:2:
-../vector_tests/../../../src/vector/vector.hpp:156:39: error: no matching conversion for functional-style cast from 'int *const' to 'ft::vector<int, std::__1::allocator<int> >::const_iterator' (aka '__wrap_iter<std::iterator<std::random_access_iterator_tag, int> >')
-  const_iterator end() const { return const_iterator(this->_M_impl._M_finish); }
-                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../vector_tests/../../../src/vector/vector.hpp:112:50: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::end' requested here
-        std::uninitialized_copy(__x.begin(), __x.end(), this->_M_impl._M_start);
-                                                 ^
-../vector_tests/__service.ipp:19:16: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::vector' requested here
-  res2 = func2(my_vector);
-               ^
-../vector_tests/assign().cpp:46:10: note: in instantiation of function template specialization 'run_vector_unit_test<int>' requested here
-    exit(run_vector_unit_test<int>("assign()", assign_test, assign_test));
-         ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit copy constructor) not viable: no known conversion from 'int *const' to 'const ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' for 1st argument
-class __wrap_iter{
-      ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit default constructor) not viable: requires 0 arguments, but 1 was provided
-In file included from ../vector_tests/assign().cpp:1:
+In file included from ../vector_tests/operator >=.cpp:1:
 In file included from ../vector_tests/../system/system_methods.ipp:2:
-In file included from ../vector_tests/../system/lib.hpp:12:
-In file included from /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/array:111:
-In file included from /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/algorithm:643:
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:3137:20: error: invalid operands to binary expression ('ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' and 'ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >')
-        for (; __f != __l; ++__f, (void) ++__r)
-               ~~~ ^  ~~~
-../vector_tests/../../../src/vector/vector.hpp:112:14: note: in instantiation of function template specialization 'std::__1::uninitialized_copy<ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >, int *>' requested here
-        std::uninitialized_copy(__x.begin(), __x.end(), this->_M_impl._M_start);
-             ^
-../vector_tests/__service.ipp:19:16: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::vector' requested here
-  res2 = func2(my_vector);
-               ^
-../vector_tests/assign().cpp:46:10: note: in instantiation of function template specialization 'run_vector_unit_test<int>' requested here
-    exit(run_vector_unit_test<int>("assign()", assign_test, assign_test));
-         ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/system_error:419:1: note: candidate function not viable: no known conversion from 'ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' to 'const std::__1::error_code' for 1st argument
-operator!=(const error_code& __x, const error_code& __y) _NOEXCEPT
+In file included from ../vector_tests/../system/lib.hpp:30:
+../vector_tests/../system/Alloc.hpp:55:27: warning: variadic templates are a C++11 extension [-Wc++11-extensions]
+template <class _Up, class... _Args>
+                          ^
+../vector_tests/../system/Alloc.hpp:58:34: warning: rvalue references are a C++11 extension [-Wc++11-extensions]
+        construct(_Up* __p, _Args&&... __args)
+                                 ^
+../vector_tests/../system/Alloc.hpp:164:27: warning: variadic templates are a C++11 extension [-Wc++11-extensions]
+template <class _Up, class... _Args>
+                          ^
+../vector_tests/../system/Alloc.hpp:167:34: warning: rvalue references are a C++11 extension [-Wc++11-extensions]
+        construct(_Up* __p, _Args&&... __args)
+                                 ^
+4 warnings generated.
+ed.
+2: error: no member named 'swap' in 'ft::vector<int>'
+    vector.swap(tmp);
+    ~~~~~~ ^
+../vector_tests/swap().cpp:72:57: note: in instantiation of function template specialization 'swap_test<int>' requested here
+    exit(run_vector_unit_test<int>("swap()", swap_test, swap_test));
+                                                        ^
+../vector_tests/swap().cpp:54:12: error: no member named 'swap' in 'ft::vector<int>'
+    vector.swap(tmp3);
+    ~~~~~~ ^
+4 warnings and 2 errors generated.
+e
+    v.push_back(*(vector.erase(vector.begin() + 8 * _ratio)));
+                         ^
+../vector_tests/erase(value).cpp:34:66: note: in instantiation of function template specialization 'erase_test_1<int>' requested here
+    exit(run_vector_unit_test<int>("erase(value)", erase_test_1, erase_test_1));
+                                                                 ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/move_iterator.h:172:1: note: candidate template ignored: could not match 'move_iterator' against 'random_access_iterator'
+operator+(typename move_iterator<_Iter>::difference_type __n, const move_iterator<_Iter>& __x)
 ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/system_error:424:1: note: candidate function not viable: no known conversion from 'ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' to 'const std::__1::error_code' for 1st argument
-operator!=(const error_code& __x, const error_condition& __y) _NOEXCEPT
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/reverse_iterator.h:221:1: note: candidate template ignored: could not match 'reverse_iterator' against 'random_access_iterator'
+operator+(typename reverse_iterator<_Iter>::difference_type __n, const reverse_iterator<_Iter>& __x)
 ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/system_error:429:1: note: candidate function not viable: no known conversion from 'ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' to 'const std::__1::error_condition' for 1st argument
-operator!=(const error_condition& __x, const error_code& __y) _NOEXCEPT
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/wrap_iter.h:278:21: note: candidate template ignored: could not match '__wrap_iter' against 'random_access_iterator'
+__wrap_iter<_Iter1> operator+(typename __wrap_iter<_Iter1>::difference_type __n, __wrap_iter<_Iter1> __x) _NOEXCEPT
+                    ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4269:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(const basic_string<_CharT, _Traits, _Allocator>& __lhs,
 ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/system_error:434:1: note: candidate function not viable: no known conversion from 'ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' to 'const std::__1::error_condition' for 1st argument
-operator!=(const error_condition& __x, const error_condition& __y) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/utility:584:1: note: candidate template ignored: could not match 'pair' against '__wrap_iter'
-operator!=(const pair<_T1,_T2>& __x, const pair<_T1,_T2>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iterator:823:1: note: candidate template ignored: could not match 'reverse_iterator' against '__wrap_iter'
-operator!=(const reverse_iterator<_Iter1>& __x, const reverse_iterator<_Iter2>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iterator:1045:1: note: candidate template ignored: could not match 'istream_iterator' against '__wrap_iter'
-operator!=(const istream_iterator<_Tp, _CharT, _Traits, _Distance>& __x,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iterator:1146:6: note: candidate template ignored: could not match 'istreambuf_iterator' against '__wrap_iter'
-bool operator!=(const istreambuf_iterator<_CharT,_Traits>& __a,
-     ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iterator:1259:1: note: candidate template ignored: could not match 'move_iterator' against '__wrap_iter'
-operator!=(const move_iterator<_Iter1>& __x, const move_iterator<_Iter2>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iterator:1635:1: note: candidate template ignored: could not match 'std::__1::__wrap_iter' against 'ft::__wrap_iter'
-operator!=(const __wrap_iter<_Iter1>& __x, const __wrap_iter<_Iter2>& __y) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iterator:1667:1: note: candidate template ignored: could not match 'std::__1::__wrap_iter' against 'ft::__wrap_iter'
-operator!=(const __wrap_iter<_Iter1>& __x, const __wrap_iter<_Iter1>& __y) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:2046:6: note: candidate template ignored: could not match 'allocator' against '__wrap_iter'
-bool operator!=(const allocator<_Tp>&, const allocator<_Up>&) _NOEXCEPT {return false;}
-     ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:2882:1: note: candidate template ignored: could not match 'unique_ptr' against '__wrap_iter'
-operator!=(const unique_ptr<_T1, _D1>& __x, const unique_ptr<_T2, _D2>& __y) {return !(__x == __y);}
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:2929:1: note: candidate template ignored: could not match 'unique_ptr' against '__wrap_iter'
-operator!=(const unique_ptr<_T1, _D1>& __x, nullptr_t) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:2937:1: note: candidate template ignored: could not match 'unique_ptr' against '__wrap_iter'
-operator!=(nullptr_t, const unique_ptr<_T1, _D1>& __x) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:4434:1: note: candidate template ignored: could not match 'shared_ptr' against '__wrap_iter'
-operator!=(const shared_ptr<_Tp>& __x, const shared_ptr<_Up>& __y) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:4496:1: note: candidate template ignored: could not match 'shared_ptr' against '__wrap_iter'
-operator!=(const shared_ptr<_Tp>& __x, nullptr_t) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:4504:1: note: candidate template ignored: could not match 'shared_ptr' against '__wrap_iter'
-operator!=(nullptr_t, const shared_ptr<_Tp>& __x) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__functional_03:1578:1: note: candidate template ignored: could not match 'function' against '__wrap_iter'
-operator!=(const function<_Fp>& __f, nullptr_t) {return (bool)__f;}
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__functional_03:1583:1: note: candidate template ignored: could not match 'function' against '__wrap_iter'
-operator!=(nullptr_t, const function<_Fp>& __f) {return (bool)__f;}
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/array:379:1: note: candidate template ignored: could not match 'array' against '__wrap_iter'
-operator!=(const array<_Tp, _Size>& __x, const array<_Tp, _Size>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector:3344:1: note: candidate template ignored: could not match 'vector' against '__wrap_iter'
-operator!=(const vector<_Tp, _Allocator>& __x, const vector<_Tp, _Allocator>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/map:1612:1: note: candidate template ignored: could not match 'map' against '__wrap_iter'
-operator!=(const map<_Key, _Tp, _Compare, _Allocator>& __x,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/map:2194:1: note: candidate template ignored: could not match 'multimap' against '__wrap_iter'
-operator!=(const multimap<_Key, _Tp, _Compare, _Allocator>& __x,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/set:916:1: note: candidate template ignored: could not match 'set' against '__wrap_iter'
-operator!=(const set<_Key, _Compare, _Allocator>& __x,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/set:1441:1: note: candidate template ignored: could not match 'multiset' against '__wrap_iter'
-operator!=(const multiset<_Key, _Compare, _Allocator>& __x,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/deque:2976:1: note: candidate template ignored: could not match 'deque' against '__wrap_iter'
-operator!=(const deque<_Tp, _Allocator>& __x, const deque<_Tp, _Allocator>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stack:272:1: note: candidate template ignored: could not match 'stack' against '__wrap_iter'
-operator!=(const stack<_Tp, _Container>& __x, const stack<_Tp, _Container>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string_view:643:6: note: candidate template ignored: could not match 'basic_string_view' against '__wrap_iter'
-bool operator!=(basic_string_view<_CharT, _Traits> __lhs, basic_string_view<_CharT, _Traits> __rhs) _NOEXCEPT
-     ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string_view:652:6: note: candidate template ignored: could not match 'basic_string_view' against '__wrap_iter'
-bool operator!=(basic_string_view<_CharT, _Traits> __lhs,
-     ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string_view:662:6: note: candidate template ignored: could not match 'basic_string_view' against '__wrap_iter'
-bool operator!=(typename common_type<basic_string_view<_CharT, _Traits> >::type __lhs,
-     ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:568:6: note: candidate template ignored: could not match 'fpos' against '__wrap_iter'
-bool operator!=(const fpos<_StateT>& __x, const fpos<_StateT>& __y)
-     ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:3907:1: note: candidate template ignored: could not match 'basic_string' against '__wrap_iter'
-operator!=(const basic_string<_CharT,_Traits,_Allocator>& __lhs,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:3916:1: note: candidate template ignored: could not match 'const _CharT *' against 'ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >'
-operator!=(const _CharT* __lhs,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:3925:1: note: candidate template ignored: could not match 'basic_string' against '__wrap_iter'
-operator!=(const basic_string<_CharT, _Traits, _Allocator>& __lhs,
-^
-../vector_tests/../../../src/vector/../utils/ft_pair.hpp:31:13: note: candidate template ignored: could not match 'pair' against '__wrap_iter'
-inline bool operator!=(const pair<T1, T2> &x, const pair<T1, T2> &y) {
-            ^
-../vector_tests/../../../src/vector/../utils/ft_reverse_iterator.hpp:99:6: note: candidate template ignored: could not match 'reverse_iterator' against '__wrap_iter'
-bool operator!=(const std::reverse_iterator<Iterator1> &lhs,
-     ^
-In file included from ../vector_tests/assign().cpp:2:
-In file included from ../vector_tests/__service.ipp:2:
-../vector_tests/../../../src/vector/vector.hpp:150:29: error: no matching conversion for functional-style cast from 'int *' to 'ft::vector<int, std::__1::allocator<int> >::iterator' (aka '__wrap_iter<std::iterator<std::random_access_iterator_tag, int> >')
-  iterator begin() { return iterator(this->_M_impl._M_start); }
-                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../vector_tests/assign().cpp:32:23: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::begin' requested here
-    vector.assign(tmp.begin(), tmp.end());
-                      ^
-../vector_tests/assign().cpp:46:61: note: in instantiation of function template specialization 'assign_test<int>' requested here
-    exit(run_vector_unit_test<int>("assign()", assign_test, assign_test));
-                                                            ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit copy constructor) not viable: no known conversion from 'int *' to 'const ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' for 1st argument
-class __wrap_iter{
-      ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit default constructor) not viable: requires 0 arguments, but 1 was provided
-In file included from ../vector_tests/assign().cpp:2:
-In file included from ../vector_tests/__service.ipp:2:
-../vector_tests/../../../src/vector/vector.hpp:155:27: error: no matching conversion for functional-style cast from 'int *' to 'ft::vector<int, std::__1::allocator<int> >::iterator' (aka '__wrap_iter<std::iterator<std::random_access_iterator_tag, int> >')
-  iterator end() { return iterator(this->_M_impl._M_finish); }
-                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../vector_tests/assign().cpp:32:36: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::end' requested here
-    vector.assign(tmp.begin(), tmp.end());
-                                   ^
-../vector_tests/assign().cpp:46:61: note: in instantiation of function template specialization 'assign_test<int>' requested here
-    exit(run_vector_unit_test<int>("assign()", assign_test, assign_test));
-                                                            ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit copy constructor) not viable: no known conversion from 'int *' to 'const ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' for 1st argument
-class __wrap_iter{
-      ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit default constructor) not viable: requires 0 arguments, but 1 was provided
-11 errors generated.
-                                     ^
-../vector_tests/reserve().cpp:22:24: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::capacity' requested here
-    v.push_back(vector.capacity());
-                       ^
-../vector_tests/reserve().cpp:28:63: note: in instantiation of function template specialization 'reserve_test<int>' requested here
-    exit(run_vector_unit_test<int>("reserve()", reserve_test, reserve_test));
-                                                              ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit copy constructor) not viable: no known conversion from 'int *' to 'const ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' for 1st argument
-class __wrap_iter{
-      ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit default constructor) not viable: requires 0 arguments, but 1 was provided
-12 errors generated.
-t>' requested here
-    exit(run_vector_unit_test<int>("resize()", resize_test, resize_test));
-                                                            ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit copy constructor) not viable: no known conversion from 'int *' to 'const ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' for 1st argument
-class __wrap_iter{
-      ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit default constructor) not viable: requires 0 arguments, but 1 was provided
-15 errors generated.
-could not match 'const _CharT *' against 'ft::reverse_iterator<ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> > >::iterator_type' (aka 'ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >')
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4282:1: note: candidate template ignored: could not match 'const _CharT *' against 'ft::vector<int>::iterator' (aka 'random_access_iterator<int>')
 operator+(const _CharT* __lhs , const basic_string<_CharT,_Traits,_Allocator>& __rhs)
 ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:4076:1: note: candidate template ignored: could not match 'basic_string<type-parameter-0-0, type-parameter-0-1, type-parameter-0-2>' against 'long'
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4294:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
 operator+(_CharT __lhs, const basic_string<_CharT,_Traits,_Allocator>& __rhs)
 ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:4088:1: note: candidate template ignored: could not match 'basic_string' against '__wrap_iter'
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4306:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
 operator+(const basic_string<_CharT, _Traits, _Allocator>& __lhs, const _CharT* __rhs)
 ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:4100:1: note: candidate template ignored: could not match 'basic_string' against '__wrap_iter'
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4318:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
 operator+(const basic_string<_CharT, _Traits, _Allocator>& __lhs, _CharT __rhs)
 ^
-../vector_tests/../../../src/vector/../utils/ft_reverse_iterator.hpp:130:1: note: candidate template ignored: could not match 'reverse_iterator<type-parameter-0-0>' against 'long'
+../vector_tests/../../../src/vector/../utils/ft_reverse_iterator.hpp:131:1: note: candidate template ignored: could not match 'reverse_iterator' against 'random_access_iterator'
 operator+(typename reverse_iterator<Iter>::difference_type __n,
 ^
-../vector_tests/../../../src/vector/../utils/ft_reverse_iterator.hpp:52:13: error: cannot decrement value of type 'ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >'
-    return *--tmp;
-            ^ ~~~
-../vector_tests/rend().cpp:20:17: note: in instantiation of member function 'ft::reverse_iterator<ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> > >::operator*' requested here
-    v.push_back(*(vector.rend() - 1));
-                ^
-../vector_tests/rend().cpp:28:57: note: in instantiation of function template specialization 'rend_test<int>' requested here
-    exit(run_vector_unit_test<int>("rend()", rend_test, rend_test));
-                                                        ^
-12 errors generated.
-t *, int &> >' for 1st argument
-class __wrap_iter{
-      ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit default constructor) not viable: requires 0 arguments, but 1 was provided
-17 errors generated.
-e_ptr<type-parameter-0-0, type-parameter-0-1>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const unique_ptr<_T1, _D1>& __x, nullptr_t) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:2937:1: note: candidate template ignored: could not match 'unique_ptr' against 'vector'
-operator!=(nullptr_t, const unique_ptr<_T1, _D1>& __x) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:4434:1: note: candidate template ignored: could not match 'shared_ptr<type-parameter-0-0>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const shared_ptr<_Tp>& __x, const shared_ptr<_Up>& __y) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:4496:1: note: candidate template ignored: could not match 'shared_ptr<type-parameter-0-0>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const shared_ptr<_Tp>& __x, nullptr_t) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:4504:1: note: candidate template ignored: could not match 'shared_ptr' against 'vector'
-operator!=(nullptr_t, const shared_ptr<_Tp>& __x) _NOEXCEPT
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__functional_03:1578:1: note: candidate template ignored: could not match 'function<type-parameter-0-0>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const function<_Fp>& __f, nullptr_t) {return (bool)__f;}
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__functional_03:1583:1: note: candidate template ignored: could not match 'function' against 'vector'
-operator!=(nullptr_t, const function<_Fp>& __f) {return (bool)__f;}
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/array:379:1: note: candidate template ignored: could not match 'array<type-parameter-0-0, _Size>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const array<_Tp, _Size>& __x, const array<_Tp, _Size>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector:3344:1: note: candidate template ignored: could not match 'vector<type-parameter-0-0, type-parameter-0-1>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const vector<_Tp, _Allocator>& __x, const vector<_Tp, _Allocator>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/map:1612:1: note: candidate template ignored: could not match 'map<type-parameter-0-0, type-parameter-0-1, type-parameter-0-2, type-parameter-0-3>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const map<_Key, _Tp, _Compare, _Allocator>& __x,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/map:2194:1: note: candidate template ignored: could not match 'multimap<type-parameter-0-0, type-parameter-0-1, type-parameter-0-2, type-parameter-0-3>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const multimap<_Key, _Tp, _Compare, _Allocator>& __x,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/set:916:1: note: candidate template ignored: could not match 'set<type-parameter-0-0, type-parameter-0-1, type-parameter-0-2>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const set<_Key, _Compare, _Allocator>& __x,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/set:1441:1: note: candidate template ignored: could not match 'multiset<type-parameter-0-0, type-parameter-0-1, type-parameter-0-2>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const multiset<_Key, _Compare, _Allocator>& __x,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/deque:2976:1: note: candidate template ignored: could not match 'deque<type-parameter-0-0, type-parameter-0-1>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const deque<_Tp, _Allocator>& __x, const deque<_Tp, _Allocator>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stack:272:1: note: candidate template ignored: could not match 'stack<type-parameter-0-0, type-parameter-0-1>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const stack<_Tp, _Container>& __x, const stack<_Tp, _Container>& __y)
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string_view:643:6: note: candidate template ignored: could not match 'basic_string_view<type-parameter-0-0, type-parameter-0-1>' against 'ft::vector<int, std::__1::allocator<int> > *'
-bool operator!=(basic_string_view<_CharT, _Traits> __lhs, basic_string_view<_CharT, _Traits> __rhs) _NOEXCEPT
-     ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string_view:652:6: note: candidate template ignored: could not match 'basic_string_view<type-parameter-0-0, type-parameter-0-1>' against 'ft::vector<int, std::__1::allocator<int> > *'
-bool operator!=(basic_string_view<_CharT, _Traits> __lhs,
-     ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string_view:662:6: note: candidate template ignored: could not match 'basic_string_view' against 'vector'
-bool operator!=(typename common_type<basic_string_view<_CharT, _Traits> >::type __lhs,
-     ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:568:6: note: candidate template ignored: could not match 'fpos<type-parameter-0-0>' against 'ft::vector<int, std::__1::allocator<int> > *'
-bool operator!=(const fpos<_StateT>& __x, const fpos<_StateT>& __y)
-     ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:3907:1: note: candidate template ignored: could not match 'basic_string<type-parameter-0-0, type-parameter-0-1, type-parameter-0-2>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const basic_string<_CharT,_Traits,_Allocator>& __lhs,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:3916:1: note: candidate template ignored: could not match 'basic_string' against 'vector'
-operator!=(const _CharT* __lhs,
-^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:3925:1: note: candidate template ignored: could not match 'basic_string<type-parameter-0-0, type-parameter-0-1, type-parameter-0-2>' against 'ft::vector<int, std::__1::allocator<int> > *'
-operator!=(const basic_string<_CharT, _Traits, _Allocator>& __lhs,
-^
-../vector_tests/../../../src/vector/../utils/ft_pair.hpp:31:13: note: candidate template ignored: could not match 'pair<type-parameter-0-0, type-parameter-0-1>' against 'ft::vector<int, std::__1::allocator<int> > *'
-inline bool operator!=(const pair<T1, T2> &x, const pair<T1, T2> &y) {
-            ^
-../vector_tests/../../../src/vector/../utils/ft_reverse_iterator.hpp:99:6: note: candidate template ignored: could not match 'reverse_iterator<type-parameter-0-0>' against 'ft::vector<int, std::__1::allocator<int> > *'
-bool operator!=(const std::reverse_iterator<Iterator1> &lhs,
-     ^
-In file included from ../vector_tests/constructor.cpp:2:
+../vector_tests/../../../src/vector/../utils/ft_random_access_iterator.hpp:48:28: note: candidate function not viable: no known conversion from 'ft::vector<int>::iterator' (aka 'random_access_iterator<int>') to 'size_t' (aka 'unsigned long') for 1st argument
+    random_access_iterator operator+(size_t n) const
+                           ^
+../vector_tests/../../../src/vector/../utils/ft_random_access_iterator.hpp:58:28: note: candidate function not viable: no known conversion from 'ft::vector<int>::iterator' (aka 'random_access_iterator<int>') to 'int' for 1st argument
+    random_access_iterator operator+(int n) const
+                           ^
+../vector_tests/../../../src/vector/../utils/ft_random_access_iterator.hpp:118:19: note: candidate function not viable: no known conversion from 'ft::vector<int>::iterator' (aka 'random_access_iterator<int>') to 'ft::random_access_iterator::difference_type' (aka 'long') for 1st argument
+    iterator_type operator+(difference_type n) const { 
+                  ^
+4 warnings and 1 error generated.
+nce_type' (aka 'long') for 1st argument
+    iterator_type operator+(difference_type n) const { 
+                  ^
+In file included from ../vector_tests/insert(std iterators).cpp:2:
 In file included from ../vector_tests/__service.ipp:2:
-../vector_tests/../../../src/vector/vector.hpp:150:29: error: no matching conversion for functional-style cast from 'int *' to 'ft::vector<int, std::__1::allocator<int> >::iterator' (aka '__wrap_iter<std::iterator<std::random_access_iterator_tag, int> >')
-  iterator begin() { return iterator(this->_M_impl._M_start); }
-                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../vector_tests/constructor.cpp:32:27: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::begin' requested here
-    _vector<int> tmp4(tmp.begin(), tmp.end());
-                          ^
-../vector_tests/constructor.cpp:46:69: note: in instantiation of function template specialization 'constructor_test<int>' requested here
-    exit(run_vector_unit_test<int>("constructor", constructor_test, constructor_test));
-                                                                    ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit copy constructor) not viable: no known conversion from 'int *' to 'const ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' for 1st argument
-class __wrap_iter{
-      ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit default constructor) not viable: requires 0 arguments, but 1 was provided
-In file included from ../vector_tests/constructor.cpp:2:
-In file included from ../vector_tests/__service.ipp:2:
-../vector_tests/../../../src/vector/vector.hpp:155:27: error: no matching conversion for functional-style cast from 'int *' to 'ft::vector<int, std::__1::allocator<int> >::iterator' (aka '__wrap_iter<std::iterator<std::random_access_iterator_tag, int> >')
-  iterator end() { return iterator(this->_M_impl._M_finish); }
-                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../vector_tests/constructor.cpp:32:40: note: in instantiation of member function 'ft::vector<int, std::__1::allocator<int> >::end' requested here
-    _vector<int> tmp4(tmp.begin(), tmp.end());
-                                       ^
-../vector_tests/constructor.cpp:46:69: note: in instantiation of function template specialization 'constructor_test<int>' requested here
-    exit(run_vector_unit_test<int>("constructor", constructor_test, constructor_test));
-                                                                    ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit copy constructor) not viable: no known conversion from 'int *' to 'const ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >' for 1st argument
-class __wrap_iter{
-      ^
-../vector_tests/../../../src/vector/../utils/ft_iterator_traits.hpp:39:7: note: candidate constructor (the implicit default constructor) not viable: requires 0 arguments, but 1 was provided
-In file included from ../vector_tests/constructor.cpp:2:
-In file included from ../vector_tests/__service.ipp:2:
-../vector_tests/../../../src/vector/vector.hpp:130:5: error: no matching function for call to 'uninitialized_copy'
-    std::uninitialized_copy(__first, __last, this->_M_impl._M_start);
-    ^~~~~~~~~~~~~~~~~~~~~~~
-../vector_tests/constructor.cpp:32:18: note: in instantiation of function template specialization 'ft::vector<int, std::__1::allocator<int> >::vector<ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> > >' requested here
-    _vector<int> tmp4(tmp.begin(), tmp.end());
-                 ^
-../vector_tests/constructor.cpp:46:69: note: in instantiation of function template specialization 'constructor_test<int>' requested here
-    exit(run_vector_unit_test<int>("constructor", constructor_test, constructor_test));
-                                                                    ^
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/memory:3129:1: note: candidate template ignored: substitution failure [with _InputIterator = ft::__wrap_iter<std::__1::iterator<std::__1::random_access_iterator_tag, int, long, int *, int &> >, _ForwardIterator = int *]
-uninitialized_copy(_InputIterator __f, _InputIterator __l, _ForwardIterator __r)
+../vector_tests/../../../src/vector/vector.hpp:346:23: error: invalid operands to binary expression ('ft::vector<int>::iterator' (aka 'random_access_iterator<int>') and 'ft::vector<int>::const_iterator' (aka 'random_access_iterator<int>'))
+      *(this->begin() + __pos + i) = *(__first);
+        ~~~~~~~~~~~~~ ^ ~~~~~
+../vector_tests/../../../src/vector/vector.hpp:382:5: note: in instantiation of function template specialization 'ft::vector<int>::_M_insert_range<std::__wrap_iter<int *> >' requested here
+    _M_insert_range<InputIt>(__pos, __first, __last);
+    ^
+../vector_tests/insert(std iterators).cpp:28:9: note: in instantiation of function template specialization 'ft::vector<int>::insert<std::__wrap_iter<int *> >' requested here
+        vector.insert(vector.begin(), tmp.begin(), tmp.end());
+               ^
+../vector_tests/insert(std iterators).cpp:40:75: note: in instantiation of function template specialization 'insert_std_test<int>' requested here
+        exit(run_vector_unit_test<int>("insert(std iterators)", insert_std_test, insert_std_test));
+                                                                                 ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/move_iterator.h:172:1: note: candidate template ignored: could not match 'move_iterator' against 'random_access_iterator'
+operator+(typename move_iterator<_Iter>::difference_type __n, const move_iterator<_Iter>& __x)
 ^
-14 errors generated.
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/reverse_iterator.h:221:1: note: candidate template ignored: could not match 'reverse_iterator' against 'random_access_iterator'
+operator+(typename reverse_iterator<_Iter>::difference_type __n, const reverse_iterator<_Iter>& __x)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/wrap_iter.h:278:21: note: candidate template ignored: could not match '__wrap_iter' against 'random_access_iterator'
+__wrap_iter<_Iter1> operator+(typename __wrap_iter<_Iter1>::difference_type __n, __wrap_iter<_Iter1> __x) _NOEXCEPT
+                    ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4269:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(const basic_string<_CharT, _Traits, _Allocator>& __lhs,
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4282:1: note: candidate template ignored: could not match 'const _CharT *' against 'ft::vector<int>::iterator' (aka 'random_access_iterator<int>')
+operator+(const _CharT* __lhs , const basic_string<_CharT,_Traits,_Allocator>& __rhs)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4294:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(_CharT __lhs, const basic_string<_CharT,_Traits,_Allocator>& __rhs)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4306:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(const basic_string<_CharT, _Traits, _Allocator>& __lhs, const _CharT* __rhs)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4318:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(const basic_string<_CharT, _Traits, _Allocator>& __lhs, _CharT __rhs)
+^
+../vector_tests/../../../src/vector/../utils/ft_reverse_iterator.hpp:131:1: note: candidate template ignored: could not match 'reverse_iterator' against 'random_access_iterator'
+operator+(typename reverse_iterator<Iter>::difference_type __n,
+^
+../vector_tests/../../../src/vector/../utils/ft_random_access_iterator.hpp:48:28: note: candidate function not viable: no known conversion from 'ft::vector<int>::const_iterator' (aka 'random_access_iterator<int>') to 'size_t' (aka 'unsigned long') for 1st argument
+    random_access_iterator operator+(size_t n) const
+                           ^
+../vector_tests/../../../src/vector/../utils/ft_random_access_iterator.hpp:58:28: note: candidate function not viable: no known conversion from 'ft::vector<int>::const_iterator' (aka 'random_access_iterator<int>') to 'int' for 1st argument
+    random_access_iterator operator+(int n) const
+                           ^
+../vector_tests/../../../src/vector/../utils/ft_random_access_iterator.hpp:118:19: note: candidate function not viable: no known conversion from 'ft::vector<int>::const_iterator' (aka 'random_access_iterator<int>') to 'ft::random_access_iterator::difference_type' (aka 'long') for 1st argument
+    iterator_type operator+(difference_type n) const { 
+                  ^
+In file included from ../vector_tests/insert(std iterators).cpp:2:
+In file included from ../vector_tests/__service.ipp:2:
+../vector_tests/../../../src/vector/vector.hpp:330:44: error: invalid operands to binary expression ('ft::vector::size_type' (aka 'unsigned long') and 'ft::vector<int>::const_iterator' (aka 'random_access_iterator<int>'))
+    for (size_type i = 0; i < this->size() - __pos; i++) {
+                              ~~~~~~~~~~~~ ^ ~~~~~
+../vector_tests/../../../src/vector/vector.hpp:343:5: note: in instantiation of member function 'ft::vector<int>::_M_move_backward' requested here
+    _M_move_backward(__pos, __d);
+    ^
+../vector_tests/../../../src/vector/vector.hpp:382:5: note: in instantiation of function template specialization 'ft::vector<int>::_M_insert_range<std::__wrap_iter<int *> >' requested here
+    _M_insert_range<InputIt>(__pos, __first, __last);
+    ^
+../vector_tests/insert(std iterators).cpp:28:9: note: in instantiation of function template specialization 'ft::vector<int>::insert<std::__wrap_iter<int *> >' requested here
+        vector.insert(vector.begin(), tmp.begin(), tmp.end());
+               ^
+../vector_tests/insert(std iterators).cpp:40:75: note: in instantiation of function template specialization 'insert_std_test<int>' requested here
+        exit(run_vector_unit_test<int>("insert(std iterators)", insert_std_test, insert_std_test));
+                                                                                 ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/move_iterator.h:163:1: note: candidate template ignored: could not match 'move_iterator<type-parameter-0-0>' against 'unsigned long'
+operator-(const move_iterator<_Iter1>& __x, const move_iterator<_Iter2>& __y)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/reverse_iterator.h:212:1: note: candidate template ignored: could not match 'reverse_iterator<type-parameter-0-0>' against 'unsigned long'
+operator-(const reverse_iterator<_Iter1>& __x, const reverse_iterator<_Iter2>& __y)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/wrap_iter.h:266:1: note: candidate template ignored: could not match '__wrap_iter<type-parameter-0-0>' against 'unsigned long'
+operator-(const __wrap_iter<_Iter1>& __x, const __wrap_iter<_Iter2>& __y) _NOEXCEPT
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:579:11: note: candidate template ignored: could not match 'fpos<type-parameter-0-0>' against 'unsigned long'
+streamoff operator-(const fpos<_StateT>& __x, const fpos<_StateT>& __y)
+          ^
+../vector_tests/../../../src/vector/../utils/ft_reverse_iterator.hpp:138:1: note: candidate template ignored: could not match 'reverse_iterator<type-parameter-0-0>' against 'unsigned long'
+operator-(const reverse_iterator<Iterator1> &lhs,
+^
+4 warnings and 3 errors generated.
+vector.hpp:386:29: error: invalid operands to binary expression ('ft::vector<A>::iterator' (aka 'random_access_iterator<A>') and 'ft::vector<A>::const_iterator' (aka 'random_access_iterator<A>'))
+      return (this->begin() + __pos);
+              ~~~~~~~~~~~~~ ^ ~~~~~
+../vector_tests/insert(range).cpp:86:14: note: in instantiation of function template specialization 'ft::vector<A>::insert<ft::random_access_iterator<B *> >' requested here
+    try { vv.insert(vv.begin(), v1.begin(), v1.end()); }
+             ^
+../vector_tests/insert(range).cpp:97:68: note: in instantiation of function template specialization 'insert_test_3<int>' requested here
+    exit(run_vector_unit_test<int>("insert(range)", insert_test_3, insert_test_3));
+                                                                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/move_iterator.h:172:1: note: candidate template ignored: could not match 'move_iterator' against 'random_access_iterator'
+operator+(typename move_iterator<_Iter>::difference_type __n, const move_iterator<_Iter>& __x)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/reverse_iterator.h:221:1: note: candidate template ignored: could not match 'reverse_iterator' against 'random_access_iterator'
+operator+(typename reverse_iterator<_Iter>::difference_type __n, const reverse_iterator<_Iter>& __x)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/wrap_iter.h:278:21: note: candidate template ignored: could not match '__wrap_iter' against 'random_access_iterator'
+__wrap_iter<_Iter1> operator+(typename __wrap_iter<_Iter1>::difference_type __n, __wrap_iter<_Iter1> __x) _NOEXCEPT
+                    ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4269:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(const basic_string<_CharT, _Traits, _Allocator>& __lhs,
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4282:1: note: candidate template ignored: could not match 'const _CharT *' against 'ft::vector<A>::iterator' (aka 'random_access_iterator<A>')
+operator+(const _CharT* __lhs , const basic_string<_CharT,_Traits,_Allocator>& __rhs)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4294:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(_CharT __lhs, const basic_string<_CharT,_Traits,_Allocator>& __rhs)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4306:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(const basic_string<_CharT, _Traits, _Allocator>& __lhs, const _CharT* __rhs)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4318:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(const basic_string<_CharT, _Traits, _Allocator>& __lhs, _CharT __rhs)
+^
+../vector_tests/../../../src/vector/../utils/ft_reverse_iterator.hpp:131:1: note: candidate template ignored: could not match 'reverse_iterator' against 'random_access_iterator'
+operator+(typename reverse_iterator<Iter>::difference_type __n,
+^
+../vector_tests/../../../src/vector/../utils/ft_random_access_iterator.hpp:48:28: note: candidate function not viable: no known conversion from 'ft::vector<A>::const_iterator' (aka 'random_access_iterator<A>') to 'size_t' (aka 'unsigned long') for 1st argument
+    random_access_iterator operator+(size_t n) const
+                           ^
+../vector_tests/../../../src/vector/../utils/ft_random_access_iterator.hpp:58:28: note: candidate function not viable: no known conversion from 'ft::vector<A>::const_iterator' (aka 'random_access_iterator<A>') to 'int' for 1st argument
+    random_access_iterator operator+(int n) const
+                           ^
+../vector_tests/../../../src/vector/../utils/ft_random_access_iterator.hpp:118:19: note: candidate function not viable: no known conversion from 'ft::vector<A>::const_iterator' (aka 'random_access_iterator<A>') to 'ft::random_access_iterator::difference_type' (aka 'long') for 1st argument
+    iterator_type operator+(difference_type n) const { 
+                  ^
+In file included from ../vector_tests/insert(range).cpp:2:
+In file included from ../vector_tests/__service.ipp:2:
+../vector_tests/../../../src/vector/vector.hpp:346:23: error: invalid operands to binary expression ('ft::vector<A>::iterator' (aka 'random_access_iterator<A>') and 'ft::vector<A>::const_iterator' (aka 'random_access_iterator<A>'))
+      *(this->begin() + __pos + i) = *(__first);
+        ~~~~~~~~~~~~~ ^ ~~~~~
+../vector_tests/../../../src/vector/vector.hpp:382:5: note: in instantiation of function template specialization 'ft::vector<A>::_M_insert_range<ft::random_access_iterator<B *> >' requested here
+    _M_insert_range<InputIt>(__pos, __first, __last);
+    ^
+../vector_tests/insert(range).cpp:86:14: note: in instantiation of function template specialization 'ft::vector<A>::insert<ft::random_access_iterator<B *> >' requested here
+    try { vv.insert(vv.begin(), v1.begin(), v1.end()); }
+             ^
+../vector_tests/insert(range).cpp:97:68: note: in instantiation of function template specialization 'insert_test_3<int>' requested here
+    exit(run_vector_unit_test<int>("insert(range)", insert_test_3, insert_test_3));
+                                                                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/move_iterator.h:172:1: note: candidate template ignored: could not match 'move_iterator' against 'random_access_iterator'
+operator+(typename move_iterator<_Iter>::difference_type __n, const move_iterator<_Iter>& __x)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/reverse_iterator.h:221:1: note: candidate template ignored: could not match 'reverse_iterator' against 'random_access_iterator'
+operator+(typename reverse_iterator<_Iter>::difference_type __n, const reverse_iterator<_Iter>& __x)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/wrap_iter.h:278:21: note: candidate template ignored: could not match '__wrap_iter' against 'random_access_iterator'
+__wrap_iter<_Iter1> operator+(typename __wrap_iter<_Iter1>::difference_type __n, __wrap_iter<_Iter1> __x) _NOEXCEPT
+                    ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4269:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(const basic_string<_CharT, _Traits, _Allocator>& __lhs,
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4282:1: note: candidate template ignored: could not match 'const _CharT *' against 'ft::vector<A>::iterator' (aka 'random_access_iterator<A>')
+operator+(const _CharT* __lhs , const basic_string<_CharT,_Traits,_Allocator>& __rhs)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4294:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(_CharT __lhs, const basic_string<_CharT,_Traits,_Allocator>& __rhs)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4306:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(const basic_string<_CharT, _Traits, _Allocator>& __lhs, const _CharT* __rhs)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:4318:1: note: candidate template ignored: could not match 'basic_string' against 'random_access_iterator'
+operator+(const basic_string<_CharT, _Traits, _Allocator>& __lhs, _CharT __rhs)
+^
+../vector_tests/../../../src/vector/../utils/ft_reverse_iterator.hpp:131:1: note: candidate template ignored: could not match 'reverse_iterator' against 'random_access_iterator'
+operator+(typename reverse_iterator<Iter>::difference_type __n,
+^
+../vector_tests/../../../src/vector/../utils/ft_random_access_iterator.hpp:48:28: note: candidate function not viable: no known conversion from 'ft::vector<A>::const_iterator' (aka 'random_access_iterator<A>') to 'size_t' (aka 'unsigned long') for 1st argument
+    random_access_iterator operator+(size_t n) const
+                           ^
+../vector_tests/../../../src/vector/../utils/ft_random_access_iterator.hpp:58:28: note: candidate function not viable: no known conversion from 'ft::vector<A>::const_iterator' (aka 'random_access_iterator<A>') to 'int' for 1st argument
+    random_access_iterator operator+(int n) const
+                           ^
+../vector_tests/../../../src/vector/../utils/ft_random_access_iterator.hpp:118:19: note: candidate function not viable: no known conversion from 'ft::vector<A>::const_iterator' (aka 'random_access_iterator<A>') to 'ft::random_access_iterator::difference_type' (aka 'long') for 1st argument
+    iterator_type operator+(difference_type n) const { 
+                  ^
+In file included from ../vector_tests/insert(range).cpp:2:
+In file included from ../vector_tests/__service.ipp:2:
+../vector_tests/../../../src/vector/vector.hpp:330:44: error: invalid operands to binary expression ('ft::vector::size_type' (aka 'unsigned long') and 'ft::vector<A>::const_iterator' (aka 'random_access_iterator<A>'))
+    for (size_type i = 0; i < this->size() - __pos; i++) {
+                              ~~~~~~~~~~~~ ^ ~~~~~
+../vector_tests/../../../src/vector/vector.hpp:343:5: note: in instantiation of member function 'ft::vector<A>::_M_move_backward' requested here
+    _M_move_backward(__pos, __d);
+    ^
+../vector_tests/../../../src/vector/vector.hpp:382:5: note: in instantiation of function template specialization 'ft::vector<A>::_M_insert_range<ft::random_access_iterator<B *> >' requested here
+    _M_insert_range<InputIt>(__pos, __first, __last);
+    ^
+../vector_tests/insert(range).cpp:86:14: note: in instantiation of function template specialization 'ft::vector<A>::insert<ft::random_access_iterator<B *> >' requested here
+    try { vv.insert(vv.begin(), v1.begin(), v1.end()); }
+             ^
+../vector_tests/insert(range).cpp:97:68: note: in instantiation of function template specialization 'insert_test_3<int>' requested here
+    exit(run_vector_unit_test<int>("insert(range)", insert_test_3, insert_test_3));
+                                                                   ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/move_iterator.h:163:1: note: candidate template ignored: could not match 'move_iterator<type-parameter-0-0>' against 'unsigned long'
+operator-(const move_iterator<_Iter1>& __x, const move_iterator<_Iter2>& __y)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/reverse_iterator.h:212:1: note: candidate template ignored: could not match 'reverse_iterator<type-parameter-0-0>' against 'unsigned long'
+operator-(const reverse_iterator<_Iter1>& __x, const reverse_iterator<_Iter2>& __y)
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/wrap_iter.h:266:1: note: candidate template ignored: could not match '__wrap_iter<type-parameter-0-0>' against 'unsigned long'
+operator-(const __wrap_iter<_Iter1>& __x, const __wrap_iter<_Iter2>& __y) _NOEXCEPT
+^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/string:579:11: note: candidate template ignored: could not match 'fpos<type-parameter-0-0>' against 'unsigned long'
+streamoff operator-(const fpos<_StateT>& __x, const fpos<_StateT>& __y)
+          ^
+../vector_tests/../../../src/vector/../utils/ft_reverse_iterator.hpp:138:1: note: candidate template ignored: could not match 'reverse_iterator<type-parameter-0-0>' against 'unsigned long'
+operator-(const reverse_iterator<Iterator1> &lhs,
+^
+4 warnings and 6 errors generated.

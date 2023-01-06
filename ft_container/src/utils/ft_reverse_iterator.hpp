@@ -89,6 +89,7 @@ public:
 
   reference operator[](difference_type __n) const { return base()[-__n - 1]; }
 };
+
 template <class Iterator1, class Iterator2>
 bool operator==(const reverse_iterator<Iterator1> &lhs,
                 const reverse_iterator<Iterator2> &rhs) {
