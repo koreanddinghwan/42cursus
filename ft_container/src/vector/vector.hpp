@@ -156,18 +156,41 @@ public:
   }
 
 
+
+	template<typename _It>
+	void _M_assign_dispatch(_It __first, _It __last, ft::false_type) {
+		*this = vector<_Tp, _Alloc> (__first, __last);
+	}
+
+
+	template <typename _Integral>
+	void _M_assign_dispatch(_Integral __n, _Integral &__v, ft::true_type) {
+		iterator _new = this->_M_allocate(__n);
+		std::fill_n(_new, __n, __v);
+		this->_M_destroy(this->_M_impl._M_start);
+		this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
+		this->_M_impl._M_start = &(*_new);
+		this->_M_impl._M_finish = &(*(_new + __n));
+		this->_M_impl._M_end_of_storage = &(*(_new + __n));
+	}
+
+
+
   void assign(size_type __n, const _Tp &__v) {
-	iterator _new = this->_M_allocate(__n);
-	std::fill_n(_new, __n, __v);
-	this->_M_destroy(this->_M_impl._M_start);
-	this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
-	this->_M_impl._M_start = _new;
-	this->_M_impl._M_finish = _new + __n;
-	this->_M_impl._M_end_of_storage = _new + __n;
+		iterator _new = this->_M_allocate(__n);
+		std::fill_n(_new, __n, __v);
+		this->_M_destroy(this->_M_impl._M_start);
+		this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
+		this->_M_impl._M_start = &(*_new);
+		this->_M_impl._M_finish = &(*(_new + __n));
+		this->_M_impl._M_end_of_storage = &(*(_new + __n));
   }
 
 
-  template <typename InputIt> void assign(InputIt first, InputIt last) {
+	template <typename _It> 
+	void assign(_It __first, _It __last) {
+	typedef typename ft::is_integral<_It>::type _Integral;
+	_M_assign_dispatch(__first, __last, _Integral());
   }
 
   /*
@@ -266,14 +289,19 @@ public:
     this->_M_impl._M_end_of_storage = &(*(_new_pointer + __new_cap));
   }
 
-  /*!!!!*/
-  /* void resize(size_type __n, _Tp value = _Tp()) { */
 
-  /*   if (this->size() == __n) */
-  /*     return; */
-  /*   if (__n > this->max_size()) */
-  /*     throw std::length_error("std::length error"); */
-  /* } */
+  void resize(size_type __n) {
+
+  }
+
+
+  void resize(size_type __n, _Tp value = _Tp()) {
+
+    if (this->size() == __n)
+      return;
+    if (__n > this->max_size())
+      throw std::length_error("std::length error");
+  }
 
   /*
    * modifiers

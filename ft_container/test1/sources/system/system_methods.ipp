@@ -1,6 +1,18 @@
 #pragma once
 #include "lib.hpp"
 
+template<typename _v>
+void printVector(_v v){
+
+	std::cout<<std::endl;
+	auto begin = v.begin();
+
+	for (;begin < v.end(); begin++) {
+		std::cout<<*begin<<std::endl;
+	}
+	std::cout<<std::endl;
+}
+
 time_t timer() {
 	struct timeval start = {};
 	gettimeofday(&start, nullptr);

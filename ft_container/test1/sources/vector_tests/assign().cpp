@@ -10,14 +10,15 @@ std::vector<int> assign_test(std::vector<T> vector) {
     tmp2.assign(4 * _ratio, 1);
     g_start1 = timer();
     vector.assign(tmp.begin(), tmp.end());
-    v.push_back(vector[1]);
-    v.push_back(vector.size());
-    v.push_back(vector.capacity());
+    /* v.push_back(vector[1]); */
+    /* v.push_back(vector.size()); */
+    /* v.push_back(vector.capacity()); */
     vector.assign(tmp2.begin(), tmp2.end());
     g_end1 = timer();
-    v.push_back(vector[444]);
-    v.push_back(vector.size());
-    v.push_back(vector.capacity());
+    /* v.push_back(vector[444]); */
+    /* v.push_back(vector.size()); */
+    /* v.push_back(vector.capacity()); */
+	printVector(v);
     return v;
 }
 
@@ -30,14 +31,15 @@ std::vector<int> assign_test(_vector<T> vector) {
     tmp2.assign(4 * _ratio, 1);
     g_start2 = timer();
     vector.assign(tmp.begin(), tmp.end());
-    v.push_back(vector[1]);
-    v.push_back(vector.size());
-    v.push_back(vector.capacity());
+    /* v.push_back(vector[1]); */
+    /* v.push_back(vector.size()); */
+    /* v.push_back(vector.capacity()); */
     vector.assign(tmp2.begin(), tmp2.end());
     g_end2 = timer();
-    v.push_back(vector[444]);
-    v.push_back(vector.size());
-    v.push_back(vector.capacity());
+    /* v.push_back(vector[444]); */
+    /* v.push_back(vector.size()); */
+    /* v.push_back(vector.capacity()); */
+	printVector(v);
     return v;
 }
 

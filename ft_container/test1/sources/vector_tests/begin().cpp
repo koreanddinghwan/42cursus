@@ -9,6 +9,7 @@ std::vector<int> begin_test(std::vector<T> vector) {
     v.push_back(*vector.begin());
     v.push_back(*++vector.begin());
     g_end1 = timer();
+	printVector(v);
     return v;
 }
 
@@ -20,6 +21,7 @@ std::vector<int> begin_test(_vector<T> vector) {
     v.push_back(*vector.begin());
     v.push_back(*++vector.begin());
     g_end2 = timer();
+	printVector(v);
     return v;
 }
 
