@@ -17,6 +17,7 @@ std::vector<int> iterator_test(std::vector<T> vector) {
     it -= 1;
     v.push_back(*it);
     g_end1 = timer();
+	printVector(v);
     return v;
 }
 
@@ -36,6 +37,7 @@ std::vector<int> iterator_test(_vector<T> vector) {
     it -= 1;
     v.push_back(*it);
     g_end2 = timer();
+	printVector(v);
     return v;
 }
 

@@ -59,8 +59,6 @@ std::vector<int> insert_test_3(std::vector<T> vector) {
 	std::cout<<"B vector construct"<<std::endl;
     std::vector<B*> v1;
 
-	std::cout<<"======="<<std::endl;
-	std::cout<<"======="<<std::endl;
 	std::cout<<"pushback#1"<<std::endl;
     v1.push_back(&(*k2));
 	std::cout<<"pushback#1"<<std::endl;
@@ -73,15 +71,16 @@ std::vector<int> insert_test_3(std::vector<T> vector) {
         v.push_back(vv.size());
         v.push_back(vv.capacity());
     }
-	std::cout<<"======="<<std::endl;
-	std::cout<<"======="<<std::endl;
-	std::cout<<"======="<<std::endl;
     return v;
 }
 
 template <typename T>
 std::vector<int> insert_test_3(_vector<T> vector) {
-    std::vector<int> v;
+
+	std::cout<<"======="<<std::endl;
+	std::cout<<"======="<<std::endl;
+	std::cout<<"======="<<std::endl;
+	std::vector<int> v;
     _vector<int> tmp;
     tmp.assign(2600 * _ratio, 1);
     vector.assign(4200 * _ratio, 1);
@@ -92,8 +91,6 @@ std::vector<int> insert_test_3(_vector<T> vector) {
     v.push_back(vector.size());
     v.push_back(vector.capacity());
 
-	std::cout<<"======="<<std::endl;
-	std::cout<<"======="<<std::endl;
 	std::cout<<"start"<<std::endl;
     std::unique_ptr<B> k2(new B(3));
     std::unique_ptr<B> k3(new B(4));

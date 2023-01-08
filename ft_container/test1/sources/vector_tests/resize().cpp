@@ -10,16 +10,13 @@ std::vector<int> resize_test(std::vector<T> vector) {
     vector.reserve(5000 * _ratio);
     v.push_back(vector.size());
     v.push_back(vector.capacity());
-	printVector(v);
     vector.resize(7000 * _ratio);
     v.push_back(vector.size());
     v.push_back(vector.capacity());
-	printVector(v);
     vector.resize(15300 * _ratio, T());
     v.push_back(vector.size());
     v.push_back(vector.capacity());
     v.push_back(vector[65]);
-	printVector(v);
     g_end1 = timer();
     return v;
 }
@@ -33,16 +30,13 @@ std::vector<int> resize_test(_vector<T> vector) {
     vector.reserve(5000 * _ratio);
     v.push_back(vector.size());
     v.push_back(vector.capacity());
-	printVector(v);
     vector.resize(7000 * _ratio);
     v.push_back(vector.size());
     v.push_back(vector.capacity());
-	printVector(v);
     vector.resize(15300 * _ratio, T());
     v.push_back(vector.size());
     v.push_back(vector.capacity());
     v.push_back(vector[65]);
-	printVector(v);
     g_end2 = timer();
     return v;
 }

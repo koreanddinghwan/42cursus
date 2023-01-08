@@ -69,7 +69,8 @@ protected:
   }
 
   void _M_destroy(_Tp *__p) {
-	  _M_impl.destroy(__p);
+	  if (__p)
+	  	this->_M_impl.destroy(__p);
   }
 
   void _M_construct(pointer __p, const_reference __v){
@@ -173,6 +174,7 @@ public:
 	void _M_assign_dispatch(_Integral __n, _Integral &__v, ft::true_type) {
 		iterator _new = this->_M_allocate(__n);
 		std::fill_n(_new, __n, __v);
+		this->_M_destroy(this->_M_impl._M_start);
 		this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
 		this->_M_impl._M_start = &(*_new);
 		this->_M_impl._M_finish = &(*(_new + __n));
@@ -186,6 +188,7 @@ public:
 	for (size_type i = 0; i < __n; i++){
 		this->_M_construct(_new + i, __v);
 	}
+	this->_M_destroy(this->_M_impl._M_start);
 	this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
 	this->_M_impl._M_start = _new;
 	this->_M_impl._M_finish = _new + __n;
@@ -285,12 +288,12 @@ public:
 	pointer _to_free = this->_M_impl._M_start;
     size_type _size = this->size();
 
-	iterator _d_first = _new_pointer;
-	std::copy(this->begin(), this->end(), _d_first);
+	_M_copy_construct(this->begin(), this->end(), _new_pointer);
+	_M_range_destroy(this->_M_impl._M_start, this->size());
     this->_M_deallocate(_to_free, this->_M_impl._M_end_of_storage - _to_free);
-    this->_M_impl._M_start = &(*_new_pointer);
-    this->_M_impl._M_finish = &(*(_new_pointer + _size));
-    this->_M_impl._M_end_of_storage = &(*(_new_pointer + __new_cap));
+    this->_M_impl._M_start = _new_pointer;
+    this->_M_impl._M_finish = _new_pointer + _size;
+    this->_M_impl._M_end_of_storage = this->_M_impl._M_start + __new_cap;
   }
 
 
@@ -302,10 +305,12 @@ public:
    * 	2-b : value로 채워라
    * */
   void resize(size_type __n, _Tp __v = _Tp()) {
-    if (__n < size())
+	if (__n == this->size())
+		return ;
+    if (__n < this->size())
       erase(begin() + __n, end());
     else
-      insert(end(), __n- size(), __v);
+      insert(end(), __n - this->size(), __v);
   }
 
   /*
@@ -361,6 +366,16 @@ private:
   }
 
   /*
+   * @copy from __first to __last to __des
+   * */
+  template<typename It>
+  void _M_copy_construct(It __first, It __last, pointer __dest){
+	for (;__first != __last; __first++, __dest++) {
+		this->_M_construct(__dest, *(__first));
+	}
+  }
+
+  /*
    * @param __pos : position to insert start
    * @param __first : value to insert first
    * @param __last : value to insert last
@@ -382,12 +397,12 @@ private:
 			this->reserve(_old_size + __n);
 	}
 	std::copy_backward(this->begin() + __pos_d, this->end(), this->begin() + __pos_d + __n);
-	std::copy(__first, __last, this->begin() + __pos_d);
+	_M_copy_construct(__first, __last, this->_M_impl._M_start);
 	this->_M_impl._M_finish = &(*(this->begin() + _old_size + __n));
   }
 
   /*
-   * if template param is iterator
+   * if template second, third param is iterator
    * */
   template<typename _It>
 	void _M_insert_dispatch(const_iterator __pos, _It __first, _It __last, ft::false_type){
@@ -395,13 +410,22 @@ private:
 	}
 
   /*
-   * if template param is integral
+   * if template second, third param is integral
    * */
   template<typename _Integral>
 	void _M_insert_dispatch(const_iterator __pos, _Integral __n, const _Tp &__v, ft::true_type) {
 		this->_M_insert_fill(__pos, __v, __n);
 	}
 
+  /*
+   * @param __start : pointer to call destructor
+   * @param __n : # of element to call destructor
+   * */
+  void _M_range_destroy(pointer __start, size_type __n) {
+	for (size_type i = 0; i < __n; i++) {
+		this->_M_destroy(__start + i);
+	}
+  }
 
 public:
   void push_back(const value_type &__v) {
@@ -455,10 +479,30 @@ public:
    * |a|b|c|d|f|
    */
   iterator erase(iterator __pos) {
-	size_type _sz = this->end() - __pos;
-	std::memmove(&(*(__pos)), &(*(__pos + 1)), (_sz));
-	this->_M_impl._M_finish = &(*(this->end() - 1));
-	return (__pos);
+	typedef typename ft::is_integral<_Tp>::type _Integral;
+	size_type __pos_d = __pos - this->begin();
+	pointer rtn = &(*(this->begin() + __pos_d));
+
+    if (__pos + 1 == this->end()) {
+		this->_M_destroy(this->_M_impl._M_start + __pos_d);
+	} else {
+		size_type __pos_to_end = this->size() - __pos_d;
+		if (!_Integral()) {
+			/*
+			 * integral type need to call destroy and construct for internal element
+			 * */
+			this->_M_destroy(this->_M_impl._M_start + __pos_d);
+			for (size_type i = 0; i < __pos_to_end; i++) {
+				this->_M_construct(this->_M_impl._M_start + __pos_d + i, *(this->_M_impl._M_start + __pos_d + i + 1));
+				this->_M_destroy(this->_M_impl._M_start + __pos_d + i + 1);
+			}
+		} else {
+			size_type __pos_to_end = this->size() - __pos_d;
+			std::memmove(this->_M_impl._M_start + __pos_d, this->_M_impl._M_start + __pos_d + 1, __pos_to_end);
+		}
+	}
+    --this->_M_impl._M_finish;
+    return rtn;
   }
 
   /* |0|1|2|3|4|5|
@@ -467,20 +511,38 @@ public:
    * |a|b|d|e|f|
    * */
   iterator erase(iterator __first, iterator __last) {
-    if (__first == __last)
-      return (__last);
-    else if (__last == this->end()) {
-      this->_M_impl._M_finish -= __last - __first;
-      return (this->end());
-    } else {
+	typedef typename ft::is_integral<_Tp>::type _Integral;
+	size_type __first_d = __first - this->begin();
+	size_type __last_d = __last - this->begin();
+	size_type __range_d = __last - __first;
+	size_type __last_to_end = this->size() - __last_d;
+	pointer rtn = &(*(this->begin() + __last_d));
+
+	if (__first == __last)
+		return __last;
+
+    if (__last == this->end()) {
+		this->_M_range_destroy(this->_M_impl._M_start + __first_d, __range_d);
 		/*
-		 * __last -> end()까지의 모든 item을 __first에 집어넣는다.
+		 * return updated end() iterator
 		 * */
-		size_type _sz = __last - __first;
-		std::memmove(&(*(__first)), &(*(__last)), (_sz));
-		this->_M_impl._M_finish -= __last - __first;
-      return (__last);
-    }
+		rtn = &(*(this->begin() + __first_d + __last_to_end));
+	} else {
+		if (!_Integral()) {
+			/*
+			 * integral type need to call destroy and construct for internal element
+			 * */
+			this->_M_range_destroy(this->_M_impl._M_start + __first_d, __range_d);
+			for (size_type i = 0; i < __last_to_end; i++) {
+				this->_M_construct(this->_M_impl._M_start + __first_d + i, *(this->_M_impl._M_start + __first_d + __range_d + i));
+				this->_M_destroy(this->_M_impl._M_start + __last_d + i); //destroy from __last
+			}
+		} else {
+			std::memmove(this->_M_impl._M_start + __first_d, this->_M_impl._M_start + __last_d, __last_to_end);
+		}
+	}
+    this->_M_impl._M_finish -= __range_d;
+	return rtn;
   }
 
   /* void swap(vector &x) {} */
