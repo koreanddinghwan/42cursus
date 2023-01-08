@@ -12,6 +12,7 @@ std::vector<int> erase_test_2(std::vector<T> vector) {
     v.push_back(*(vector.begin() + 82 * _ratio));
     v.push_back(vector.size());
     v.push_back(vector.capacity());
+	printVector(v);
     return v;
 }
 
@@ -26,6 +27,7 @@ std::vector<int> erase_test_2(_vector<T> vector) {
     v.push_back(*(vector.begin() + 82 * _ratio));
     v.push_back(vector.size());
     v.push_back(vector.capacity());
+	printVector(v);
     return v;
 }
 

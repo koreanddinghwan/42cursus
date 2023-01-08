@@ -4,6 +4,7 @@
 #include "../utils/utils.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <cstring>
 #include <exception>
 #include <iostream>
 #include <iterator>
@@ -38,6 +39,8 @@ template <typename _Tp, typename _Alloc> struct _Vector_base {
 protected:
   _Vector_impl _M_impl;
   typedef _Alloc allocator_type;
+  typedef _Tp* pointer;
+  typedef const _Tp& const_reference;
 
   /*
    * important
@@ -67,6 +70,10 @@ protected:
 
   void _M_destroy(_Tp *__p) {
 	  _M_impl.destroy(__p);
+  }
+
+  void _M_construct(pointer __p, const_reference __v){
+	  _M_impl.construct(__p, __v);
   }
 
   //_M_impl 의 부모클래스 _Alloc으로 업캐스팅해서 allocator를 리턴한다.
@@ -131,7 +138,6 @@ public:
 	  }
 
   ~vector() {
-	  this->_M_destroy(this->_M_impl._M_start);
   }
 
   /*
@@ -167,7 +173,6 @@ public:
 	void _M_assign_dispatch(_Integral __n, _Integral &__v, ft::true_type) {
 		iterator _new = this->_M_allocate(__n);
 		std::fill_n(_new, __n, __v);
-		this->_M_destroy(this->_M_impl._M_start);
 		this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
 		this->_M_impl._M_start = &(*_new);
 		this->_M_impl._M_finish = &(*(_new + __n));
@@ -177,13 +182,14 @@ public:
 
 
   void assign(size_type __n, const _Tp &__v) {
-		iterator _new = this->_M_allocate(__n);
-		std::fill_n(_new, __n, __v);
-		this->_M_destroy(this->_M_impl._M_start);
-		this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
-		this->_M_impl._M_start = &(*_new);
-		this->_M_impl._M_finish = &(*(_new + __n));
-		this->_M_impl._M_end_of_storage = &(*(_new + __n));
+	pointer _new = this->_M_allocate(__n);
+	for (size_type i = 0; i < __n; i++){
+		this->_M_construct(_new + i, __v);
+	}
+	this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
+	this->_M_impl._M_start = _new;
+	this->_M_impl._M_finish = _new + __n;
+	this->_M_impl._M_end_of_storage = _new + __n;
   }
 
 
@@ -258,9 +264,9 @@ public:
 public:
   bool empty() const {
     if (this->size())
-      return true;
-    else
       return false;
+    else
+      return true;
   }
 
   size_type size() const { return static_cast<size_type>(this->_M_impl._M_finish - this->_M_impl._M_start); }
@@ -275,32 +281,31 @@ public:
     if (__new_cap > this->max_size())
       throw std::length_error("std::length error");
     // reallocation
-    iterator _new_pointer = this->_M_allocate(__new_cap);
-    iterator _invalid_first = this->begin();
-    iterator _invalid_last = this->end();
+    pointer _new_pointer = this->_M_allocate(__new_cap);
+	pointer _to_free = this->_M_impl._M_start;
     size_type _size = this->size();
 
-    std::copy(_invalid_first, _invalid_last, _new_pointer);
-	this->_M_destroy(this->_M_impl._M_start);
-    this->_M_deallocate(&(*_invalid_first), this->_M_impl._M_end_of_storage -
-                                            this->_M_impl._M_start);
+	iterator _d_first = _new_pointer;
+	std::copy(this->begin(), this->end(), _d_first);
+    this->_M_deallocate(_to_free, this->_M_impl._M_end_of_storage - _to_free);
     this->_M_impl._M_start = &(*_new_pointer);
     this->_M_impl._M_finish = &(*(_new_pointer + _size));
     this->_M_impl._M_end_of_storage = &(*(_new_pointer + __new_cap));
   }
 
 
-  void resize(size_type __n) {
-
-  }
-
-
-  void resize(size_type __n, _Tp value = _Tp()) {
-
-    if (this->size() == __n)
-      return;
-    if (__n > this->max_size())
-      throw std::length_error("std::length error");
+  /*
+   * resize container to contain __n element
+   * 1. this->size() > __n => reduce size to __n
+   * 2. this->size() < __c
+   * 	2-a : _Alloc으로 채우던가
+   * 	2-b : value로 채워라
+   * */
+  void resize(size_type __n, _Tp __v = _Tp()) {
+    if (__n < size())
+      erase(begin() + __n, end());
+    else
+      insert(end(), __n- size(), __v);
   }
 
   /*
@@ -328,7 +333,8 @@ private:
 	iterator _M_allocate_copy(const_iterator __first, const_iterator __last, size_type __n) 
 	{
 		iterator _result = this->_M_allocate(__n);
-		std::copy(__first, __last, _result);
+		size_type _sz = __last - __first;
+		std::memmove(&(*(_result)), &(*(__first)), _sz);
 		return (_result);
 	}
 
@@ -337,62 +343,76 @@ private:
    * and @fill __n number of element with __v
    * */
   void _M_insert_fill(const_iterator __pos, const _Tp &__v, size_type __n) {
-    _M_move_backward(__pos, __n);
 
-    // copy
-	std::fill_n(this->begin(), __n, __v);
+	difference_type __pos_d = (__pos - this->begin());
+
+	if (this->capacity() < this->size() + __n)
+	{
+		if (this->capacity() * 2 >= this->size() + __n)
+			this->reserve(this->capacity() * 2);
+		else
+			this->reserve(this->size() + __n);
+	}
+	std::copy_backward(this->begin() + __pos_d, this->end(), this->begin() + __pos_d + __n);
+	for (size_type i = 0; i < __n; i++){
+		this->_M_construct(this->_M_impl._M_start + __pos_d + i, __v);
+	}
+	this->_M_impl._M_finish = &(*(this->end() + __n));
   }
 
   /*
-   * move __pos item to __pos + __n
-   * */
-  void _M_move_backward(const_iterator __pos, size_type __n) {
-    reverse_iterator __past_rend = this->rend()++;
-    size_type __new_size = this->size() + __n;
-    if (__new_size > this->capacity()) {
-      // reallocation
-      this->reserve(__new_size);
-    }
-
-    reverse_iterator __cur_rend = this->rend()++;
-    for (size_type i = 0; i < this->end() - __pos; i++) {
-      *(__cur_rend + i) = *(__past_rend + i);
-    }
-  }
-
-  /*
-   *
+   * @param __pos : position to insert start
+   * @param __first : value to insert first
+   * @param __last : value to insert last
    * */
   template <typename __InputIt>
   void _M_insert_range(const_iterator __pos, __InputIt __first,
                        __InputIt __last) {
-    difference_type __d = std::distance(__first, __last);
 
-    _M_move_backward(__pos, __d);
-    // copy
-	
-    for (difference_type i = 0; i < __d; i++, __first++) {
-      *(__pos + i) = *(__first);
-    }
+    difference_type __n = __last - __first;
+	difference_type __pos_d = (__pos - this->begin());
+	size_type _old_size = this->size();
+
+	std::cout<<"reserving"<<std::endl;
+	if (this->capacity() < _old_size + __n)
+	{
+		if (this->capacity() * 2 >= _old_size + __n)
+			this->reserve(this->capacity() * 2);
+		else
+			this->reserve(_old_size + __n);
+	}
+	std::copy_backward(this->begin() + __pos_d, this->end(), this->begin() + __pos_d + __n);
+	std::copy(__first, __last, this->begin() + __pos_d);
+	this->_M_impl._M_finish = &(*(this->begin() + _old_size + __n));
   }
 
+  /*
+   * if template param is iterator
+   * */
   template<typename _It>
 	void _M_insert_dispatch(const_iterator __pos, _It __first, _It __last, ft::false_type){
 		this->_M_insert_range<_It>(__pos, __first, __last);
 	}
 
+  /*
+   * if template param is integral
+   * */
   template<typename _Integral>
-	void _M_insert_dispatch(const_iterator __pos, _Integral __n, const _Tp &__v, ft::true_type){
+	void _M_insert_dispatch(const_iterator __pos, _Integral __n, const _Tp &__v, ft::true_type) {
 		this->_M_insert_fill(__pos, __v, __n);
 	}
 
 
 public:
   void push_back(const value_type &__v) {
-    if (this->size() + 1 > this->capacity()) { // reallocation
-      this->reserve(this->size() + 1);
-    }
-    *(this->_M_impl._M_finish) = __v;
+	if (this->_M_impl._M_finish == this->_M_impl._M_end_of_storage)
+	{
+		if (this->capacity() * 2 >= this->size() + 1)
+			this->reserve(this->capacity() * 2);
+		else
+			this->reserve(this->size() + 1);
+	}
+	this->_M_construct(this->_M_impl._M_finish, __v);
     this->_M_impl._M_finish++;
   }
 
@@ -404,24 +424,28 @@ public:
    * insert(5,6) =>
    * 4 5 1 2 3 6 4 9
    * */
+
   iterator insert(const_iterator __pos, const _Tp &__v) {
+	difference_type _d = static_cast<difference_type>(__pos - this->begin());
+
     this->_M_insert_fill(__pos, __v, 1);
-    return (__pos);
+	return (static_cast<iterator>(this->begin() + _d));
   }
 
   iterator insert(const_iterator __pos, size_type __n, const _Tp &__v) {
+	difference_type _d = static_cast<difference_type>(__pos - this->begin());
+
 	this->_M_insert_fill(__pos, __v, __n);
-	return (__pos);
+	return (static_cast<iterator>(this->begin() + _d));
   }
 
   template <class _It>
   iterator insert(const_iterator __pos, _It __first, _It __last) {
-	 typedef typename ft::is_integral<_It>::type _Integral;
-	 _M_insert_dispatch(__pos, __first, __last, _Integral());
-    if (__first == __last)
-      return (__pos);
-    else
-      return (__pos);
+	  typedef typename ft::is_integral<_It>::type _Integral;
+	difference_type _d = static_cast<difference_type>(__pos - this->begin());
+
+	(_M_insert_dispatch(__pos, __first, __last, _Integral()));
+	return (static_cast<iterator>(this->begin() + _d));
   }
 
   /*
@@ -431,9 +455,10 @@ public:
    * |a|b|c|d|f|
    */
   iterator erase(iterator __pos) {
-    iterator __first = this->begin() + __pos;
-    iterator __last = __first + 1;
-    return (erase(__first, __last));
+	size_type _sz = this->end() - __pos;
+	std::memmove(&(*(__pos)), &(*(__pos + 1)), (_sz));
+	this->_M_impl._M_finish = &(*(this->end() - 1));
+	return (__pos);
   }
 
   /* |0|1|2|3|4|5|
@@ -448,17 +473,20 @@ public:
       this->_M_impl._M_finish -= __last - __first;
       return (this->end());
     } else {
-      iterator __rtn = __last - 1;
-      for (; __last < this->end(); __last++, __first++) {
-        *(__first) = *(__last);
-        this->_M_impl._M_finish -= __last - __first;
-      }
-      return (__rtn);
+		/*
+		 * __last -> end()까지의 모든 item을 __first에 집어넣는다.
+		 * */
+		size_type _sz = __last - __first;
+		std::memmove(&(*(__first)), &(*(__last)), (_sz));
+		this->_M_impl._M_finish -= __last - __first;
+      return (__last);
     }
   }
 
   /* void swap(vector &x) {} */
-  void clear() {}
+  void clear() {
+	  erase(this->begin(), this->end());
+  }
 };
 
 
@@ -484,7 +512,7 @@ bool operator<( const vector<_Tp,_Alloc>& lhs,
 template< class _Tp, class _Alloc >
 bool operator<=( const vector<_Tp,_Alloc>& lhs,
                  const vector<_Tp,_Alloc>& rhs ) {
-	return !(rhs > lhs);
+	return !(rhs < lhs);
 }
 
 template< class _Tp, class _Alloc >
