@@ -106,6 +106,123 @@ public:
   typedef typename ft::reverse_iterator<iterator> reverse_iterator;
   typedef typename ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
+private:
+  template<typename _Integeral>
+    void _M_initialize_dispatch(_Integeral __n, _Integeral __v, ft::true_type)
+    {
+		this->_M_impl._M_start = this->_M_allocate(__n);
+		std::fill_n(this->_M_impl._M_start, __n, __v);
+		this->_M_impl._M_finish = this->_M_impl._M_start + __n;
+		this->_M_impl._M_end_of_storage = this->_M_impl._M_start + __n;
+    }
+
+  /*
+   *
+   * */
+  template<typename _It>
+    void _M_initialize_dispatch(_It __first, _It __last, ft::false_type)
+    {
+		size_type _n = __last - __first;
+		this->_M_impl._M_start = this->_M_allocate(_n);
+		this->_M_impl._M_finish = &(*std::copy(__first, __last, this->begin()));
+		this->_M_impl._M_end_of_storage = this->_M_impl._M_finish;
+    }
+
+	/*
+	 * copy num of __n elements from __first to __last
+	 * */
+	pointer _M_allocate_copy(const_iterator __first, const_iterator __last, size_type __n) 
+	{
+		pointer _result = this->_M_allocate(__n);
+		this->_M_copy_construct(__first, __last, _result);
+		return (_result);
+	}
+
+  /*
+   * copy from rend to begin + pos
+   * and @fill __n number of element with __v
+   * */
+  void _M_insert_fill(const_iterator __pos, const _Tp &__v, size_type __n) {
+
+	difference_type __pos_d = (__pos - this->begin());
+
+	//reallocation
+	if (this->capacity() < this->size() + __n)
+	{
+		if (this->capacity() * 2 >= this->size() + __n)
+			this->reserve(this->capacity() * 2);
+		else
+			this->reserve(this->size() + __n);
+	}
+	std::copy_backward(this->begin() + __pos_d, this->end(), this->begin() + __pos_d + __n);
+	for (size_type i = 0; i < __n; i++){
+		this->_M_construct(this->_M_impl._M_start + __pos_d + i, __v);
+	}
+	this->_M_impl._M_finish = &(*(this->end() + __n));
+  }
+
+  /*
+   * @copy from __first to __last to __des
+   * */
+  template<typename It>
+  void _M_copy_construct(It __first, It __last, pointer __dest){
+	for (;__first != __last; __first++, __dest++) {
+		this->_M_construct(__dest, *(__first));
+	}
+  }
+
+  /*
+   * @param __pos : position to insert start
+   * @param __first : value to insert first
+   * @param __last : value to insert last
+   * */
+  template <typename __InputIt>
+  void _M_insert_range(const_iterator __pos, __InputIt __first,
+                       __InputIt __last) {
+
+    difference_type __n = __last - __first;
+	difference_type __pos_d = (__pos - this->begin());
+	size_type _old_size = this->size();
+
+	std::cout<<"reserving"<<std::endl;
+	if (this->capacity() < _old_size + __n)
+	{
+		if (this->capacity() * 2 >= _old_size + __n)
+			this->reserve(this->capacity() * 2);
+		else
+			this->reserve(_old_size + __n);
+	}
+	std::copy_backward(this->begin() + __pos_d, this->end(), this->begin() + __pos_d + __n);
+	_M_copy_construct(__first, __last, this->_M_impl._M_start);
+	this->_M_impl._M_finish = &(*(this->begin() + _old_size + __n));
+  }
+
+  /*
+   * if template second, third param is iterator
+   * */
+  template<typename _It>
+	void _M_insert_dispatch(const_iterator __pos, _It __first, _It __last, ft::false_type){
+		this->_M_insert_range<_It>(__pos, __first, __last);
+	}
+
+  /*
+   * if template second, third param is integral
+   * */
+  template<typename _Integral>
+	void _M_insert_dispatch(const_iterator __pos, _Integral __n, const _Tp &__v, ft::true_type) {
+		this->_M_insert_fill(__pos, __v, __n);
+	}
+
+  /*
+   * @param __start : pointer to call destructor
+   * @param __n : # of element to call destructor
+   * */
+  void _M_range_destroy(pointer __start, size_type __n) {
+	for (size_type i = 0; i < __n; i++) {
+		this->_M_destroy(__start + i);
+	}
+  }
+
   /*
    * constructors and destructor
    * */
@@ -150,12 +267,11 @@ public:
 		if (__x_size > this->capacity()) {
 			size_type __x_size = __x.size();
 			iterator __new = _M_allocate_copy(__x.begin(), __x.end(), __x_size);
-			this->_M_destroy(this->_M_impl._M_start);
 			this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
 			this->_M_impl._M_start = &(*__new);
 			this->_M_impl._M_end_of_storage = &(*(__new + __x_size));
 		} else {
-			std::copy(__x.begin(), __x.end(), this->_M_impl._M_start);
+			std::copy(__x.begin(), __x.end(), this->begin());
 		}
 		this->_M_impl._M_finish = this->_M_impl._M_start + __x_size;
     }
@@ -163,43 +279,69 @@ public:
   }
 
 
-
+	/*
+	 * function for interator if _It is iterator type
+	 * */
 	template<typename _It>
 	void _M_assign_dispatch(_It __first, _It __last, ft::false_type) {
-		*this = vector<_Tp, _Alloc> (__first, __last);
+		size_type __n = __last - __first;
+		this->_M_range_destroy(this->_M_impl._M_start, this->size());
+
+		//reallocation need
+		if (this->capacity() < this->size() + __n) {
+			pointer _new = this->_M_allocate(__n);
+
+			//deallocate old
+			this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
+			this->_M_copy_construct(__first, __last, _new);
+			this->_M_impl._M_start = _new;
+			this->_M_impl._M_finish = _new + __n;
+			this->_M_impl._M_end_of_storage = _new + __n;
+		} else {
+			this->_M_copy_construct(__first, __last, this->_M_impl._M_start);
+			this->_M_impl._M_finish = this->_M_impl._M_start + __n;
+		}
 	}
 
 
 	template <typename _Integral>
 	void _M_assign_dispatch(_Integral __n, _Integral &__v, ft::true_type) {
-		iterator _new = this->_M_allocate(__n);
-		std::fill_n(_new, __n, __v);
-		this->_M_destroy(this->_M_impl._M_start);
-		this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
-		this->_M_impl._M_start = &(*_new);
-		this->_M_impl._M_finish = &(*(_new + __n));
-		this->_M_impl._M_end_of_storage = &(*(_new + __n));
+		this->_M_range_destroy(this->_M_impl._M_start, this->size());
+		//reallocation need
+		if (this->capacity() < this->size() + __n) {
+			pointer _new = this->_M_allocate(__n);
+
+			//deallocate old
+			this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
+			for (size_type i = 0; i < __n; i++) {
+				this->_M_construct(_new + i, __v);
+			}
+			this->_M_impl._M_start = _new;
+			this->_M_impl._M_finish = _new + __n;
+			this->_M_impl._M_end_of_storage = _new + __n;
+		}//do not need reallocation
+		else {
+			for (size_type i = 0; i < __n; i++) {
+				this->_M_construct(this->_M_impl._M_start + i, __v);
+			}
+			this->_M_impl._M_finish = this->_M_impl._M_start + __n;
+		}
 	}
 
 
-
-  void assign(size_type __n, const _Tp &__v) {
-	pointer _new = this->_M_allocate(__n);
-	for (size_type i = 0; i < __n; i++){
-		this->_M_construct(_new + i, __v);
+/*
+ * assign num of __n elements by __v
+ * this function do not have to call any destrcutor or constructors
+ * */
+	void assign(size_type __n, const _Tp &__v) {
+		this->_M_assign_dispatch(__n, __v, true);
 	}
-	this->_M_destroy(this->_M_impl._M_start);
-	this->_M_deallocate(this->_M_impl._M_start, this->_M_impl._M_end_of_storage - this->_M_impl._M_start);
-	this->_M_impl._M_start = _new;
-	this->_M_impl._M_finish = _new + __n;
-	this->_M_impl._M_end_of_storage = _new + __n;
-  }
 
 
 	template <typename _It> 
 	void assign(_It __first, _It __last) {
-	typedef typename ft::is_integral<_It>::type _Integral;
-	_M_assign_dispatch(__first, __last, _Integral());
+		typedef typename ft::is_integral<_It>::type _Integral;
+		_M_assign_dispatch(__first, __last, _Integral());
   }
 
   /*
@@ -316,117 +458,6 @@ public:
   /*
    * modifiers
    * */
-private:
-  template<typename _Integeral>
-    void _M_initialize_dispatch(_Integeral __n, _Integeral __v, ft::true_type)
-    {
-		this->_M_impl._M_start = this->_M_allocate(__n);
-		this->_M_impl._M_end_of_storage = this->_M_impl._M_start + __n;
-		std::fill_n(this->_M_impl._M_start, __n, __v);
-		this->_M_impl._M_finish = this->_M_impl._M_start + __n;
-    }
-
-  template<typename _It>
-    void _M_initialize_dispatch(_It __first, _It __last, ft::false_type)
-    {
-		size_type _n = __last - __first;
-		this->_M_impl._M_start = this->_M_allocate(_n);
-		this->_M_impl._M_finish = &(*std::copy(__first, __last, this->begin()));
-		this->_M_impl._M_end_of_storage = this->_M_impl._M_finish;
-    }
-
-	iterator _M_allocate_copy(const_iterator __first, const_iterator __last, size_type __n) 
-	{
-		iterator _result = this->_M_allocate(__n);
-		size_type _sz = __last - __first;
-		std::memmove(&(*(_result)), &(*(__first)), _sz);
-		return (_result);
-	}
-
-  /*
-   * copy from rend to begin + pos
-   * and @fill __n number of element with __v
-   * */
-  void _M_insert_fill(const_iterator __pos, const _Tp &__v, size_type __n) {
-
-	difference_type __pos_d = (__pos - this->begin());
-
-	if (this->capacity() < this->size() + __n)
-	{
-		if (this->capacity() * 2 >= this->size() + __n)
-			this->reserve(this->capacity() * 2);
-		else
-			this->reserve(this->size() + __n);
-	}
-	std::copy_backward(this->begin() + __pos_d, this->end(), this->begin() + __pos_d + __n);
-	for (size_type i = 0; i < __n; i++){
-		this->_M_construct(this->_M_impl._M_start + __pos_d + i, __v);
-	}
-	this->_M_impl._M_finish = &(*(this->end() + __n));
-  }
-
-  /*
-   * @copy from __first to __last to __des
-   * */
-  template<typename It>
-  void _M_copy_construct(It __first, It __last, pointer __dest){
-	for (;__first != __last; __first++, __dest++) {
-		this->_M_construct(__dest, *(__first));
-	}
-  }
-
-  /*
-   * @param __pos : position to insert start
-   * @param __first : value to insert first
-   * @param __last : value to insert last
-   * */
-  template <typename __InputIt>
-  void _M_insert_range(const_iterator __pos, __InputIt __first,
-                       __InputIt __last) {
-
-    difference_type __n = __last - __first;
-	difference_type __pos_d = (__pos - this->begin());
-	size_type _old_size = this->size();
-
-	std::cout<<"reserving"<<std::endl;
-	if (this->capacity() < _old_size + __n)
-	{
-		if (this->capacity() * 2 >= _old_size + __n)
-			this->reserve(this->capacity() * 2);
-		else
-			this->reserve(_old_size + __n);
-	}
-	std::copy_backward(this->begin() + __pos_d, this->end(), this->begin() + __pos_d + __n);
-	_M_copy_construct(__first, __last, this->_M_impl._M_start);
-	this->_M_impl._M_finish = &(*(this->begin() + _old_size + __n));
-  }
-
-  /*
-   * if template second, third param is iterator
-   * */
-  template<typename _It>
-	void _M_insert_dispatch(const_iterator __pos, _It __first, _It __last, ft::false_type){
-		this->_M_insert_range<_It>(__pos, __first, __last);
-	}
-
-  /*
-   * if template second, third param is integral
-   * */
-  template<typename _Integral>
-	void _M_insert_dispatch(const_iterator __pos, _Integral __n, const _Tp &__v, ft::true_type) {
-		this->_M_insert_fill(__pos, __v, __n);
-	}
-
-  /*
-   * @param __start : pointer to call destructor
-   * @param __n : # of element to call destructor
-   * */
-  void _M_range_destroy(pointer __start, size_type __n) {
-	for (size_type i = 0; i < __n; i++) {
-		this->_M_destroy(__start + i);
-	}
-  }
-
 public:
   void push_back(const value_type &__v) {
 	if (this->_M_impl._M_finish == this->_M_impl._M_end_of_storage)
@@ -440,7 +471,10 @@ public:
     this->_M_impl._M_finish++;
   }
 
-  void pop_back() { this->_M_impl._M_finish--; }
+  void pop_back() { 
+	this->_M_destroy(this->_M_impl._M_finish);
+	this->_M_impl._M_finish--; 
+  }
 
   /*
    * 0 1 2 3 4 5 6

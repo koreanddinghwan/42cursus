@@ -1,18 +1,9 @@
 #ifndef FT_IS_INTEGRAL_H
 #define FT_IS_INTEGRAL_H
 
-#include <iostream>
+#include "ft_integral_constant.hpp"
+
 namespace ft {
-
-template <typename T, T v> struct integral_constant {
-  static const T value = v;
-  typedef T value_type;
-  typedef ft::integral_constant<T, v> type;
-	operator T() { return value; }
-};
-
-typedef integral_constant<bool, true> true_type;
-typedef integral_constant<bool, false> false_type;
 
 template <typename T> struct is_integral : public false_type {
 };
@@ -23,14 +14,6 @@ struct is_integral<bool> : public true_type {
 
 template <>
 struct is_integral<char> : public true_type {
-};
-
-template <>
-struct is_integral<char16_t> : public true_type {
-};
-
-template <>
-struct is_integral<char32_t> : public true_type {
 };
 
 template <>

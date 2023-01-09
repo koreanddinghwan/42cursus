@@ -1,33 +1,17 @@
-#include "../vector.hpp"
+#include "../vector/vector.hpp"
 #include <iostream>
 #include <vector>
 
-class A {
-private:
-  int *p;
-  A() { p = new int[5]; }
-  ~A() { delete[] p; }
-};
-
-void printft(ft::vector<int> a) {
-  for (auto begin = a.begin(); begin < a.end(); begin++) {
-    std::cout << *begin << std::endl;
-  }
-}
-
-void printstd(std::vector<int> a) {
-  for (auto begin = a.begin(); begin < a.end(); begin++) {
-    std::cout << *begin << std::endl;
-  }
+template<typename _Tp>
+void printVector(_Tp vector) {
+	auto iterator = vector.begin();
+	while (iterator != vector.end()) {
+		std::cout<<*iterator<<std::endl;
+		iterator++;
+	}
 }
 
 int main(void) {
-
-  { ft::vector<A> test; }
-
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
 
   {
     ft::vector<int> test;
@@ -35,7 +19,6 @@ int main(void) {
     test.push_back(1);
     test.push_back(1);
     test.push_back(1);
-    printft(test);
   }
 
   {
@@ -44,11 +27,8 @@ int main(void) {
     test.push_back(1);
     test.push_back(1);
     test.push_back(1);
-    printstd(test);
+	std::vector<int> copy(test.begin(), test.end());
+	printVector(copy);
   }
-
-  {}
-  while (1)
-    ;
   return 0;
 }
