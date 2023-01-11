@@ -66,9 +66,6 @@ std::vector<int> insert_test_3(std::vector<T> vector) {
 template <typename T>
 std::vector<int> insert_test_3(_vector<T> vector) {
 
-	std::cout<<"======="<<std::endl;
-	std::cout<<"======="<<std::endl;
-	std::cout<<"======="<<std::endl;
 	std::vector<int> v;
     _vector<int> tmp;
     tmp.assign(2600 * _ratio, 1);

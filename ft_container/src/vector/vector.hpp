@@ -2,6 +2,7 @@
 #define FT_VECTOR_H
 
 #include "../utils/utils.hpp"
+#include <__memory/unique_ptr.h>
 #include <algorithm>
 #include <cstddef>
 #include <cstring>
@@ -559,7 +560,13 @@ public:
 	return rtn;
   }
 
-  /* void swap(vector &x) {} */
+  void swap(vector &__x) {
+	ft::swap(this->_M_impl._M_start, __x._M_impl._M_start);
+	ft::swap(this->_M_impl._M_finish, __x._M_impl._M_finish);
+	ft::swap(this->_M_impl._M_end_of_storage, __x._M_impl._M_end_of_storage);
+
+  }
+
   void clear() {
 	  erase(this->begin(), this->end());
   }
@@ -603,10 +610,30 @@ bool operator>=( const vector<_Tp,_Alloc>& lhs,
 	return !(lhs < rhs);
 }
 
-
-
-
+	template<typename Tp>
+	inline void swap(vector<Tp> &lhs, vector<Tp> &rhs)
+	{
+		lhs.swap(rhs);
+	}
 
 } // namespace ft
+
+
+/*
+std::swap overload for ft::vector
+
+https://en.cppreference.com/w/cpp/container/vector/swap2
+
+namespace std {
+
+template<typename _Tp>
+void swap(ft::vector<_Tp> &lhs, ft::vector<_Tp> &rhs)
+{
+	std::cout<<"swap"<<std::endl;
+	lhs.swap(rhs);
+}
+
+}*/
+
 
 #endif

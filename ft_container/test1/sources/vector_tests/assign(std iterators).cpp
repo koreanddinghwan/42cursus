@@ -15,7 +15,6 @@ std::vector<int> assign_std_test(std::vector<T> vector) {
 		v.push_back(vector[i]);
 	v.push_back(vector.size());
 	v.push_back(vector.capacity());
-	printVector(v);
 	return v;
 }
 
@@ -33,7 +32,6 @@ std::vector<int> assign_std_test(_vector<T> vector) {
 		v.push_back(vector[i]);
 	v.push_back(vector.size());
 	v.push_back(vector.capacity());
-	printVector(v);
 	return v;
 }
 

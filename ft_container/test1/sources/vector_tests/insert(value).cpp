@@ -10,7 +10,6 @@ std::vector<int> insert_test_1(std::vector<T> vector) {
     g_end1 = timer();
     v.push_back(vector.size());
     v.push_back(vector.capacity());
-	printVector(v);
     return v;
 }
 
@@ -23,7 +22,6 @@ std::vector<int> insert_test_1(_vector<T> vector) {
     g_end2 = timer();
     v.push_back(vector.size());
     v.push_back(vector.capacity());
-	printVector(v);
     return v;
 }
 

@@ -8,7 +8,6 @@ std::vector<int> empty_test(std::vector<T> vector) {
     g_start1 = timer();
     v.push_back(vector.empty());
     g_end1 = timer();
-	printVector(v);
     return v;
 }
 
@@ -19,7 +18,6 @@ std::vector<int> empty_test(_vector<T> vector) {
     g_start2 = timer();
     v.push_back(vector.empty());
     g_end2 = timer();
-	printVector(v);
     return v;
 }
 
