@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iterator>
 #include <memory>
+#include <new>
 #include <stdexcept>
 
 // std::vector는 sequence design pattern의 예시이다.
@@ -180,21 +181,26 @@ private:
   void _M_insert_range(const_iterator __pos, __InputIt __first,
                        __InputIt __last) {
 
-    difference_type __n = __last - __first;
-	difference_type __pos_d = (__pos - this->begin());
-	size_type _old_size = this->size();
+    difference_type __n = __last - __first; //3
+	difference_type __pos_d = (__pos - this->begin()); //2
+	size_type _old_size = this->size(); //6
 
-	std::cout<<"reserving"<<std::endl;
-	if (this->capacity() < _old_size + __n)
-	{
-		if (this->capacity() * 2 >= _old_size + __n)
-			this->reserve(this->capacity() * 2);
-		else
-			this->reserve(_old_size + __n);
+	try {
+		//reallocation
+		if (this->capacity() < _old_size + __n)
+		{
+			if (this->capacity() * 2 >= _old_size + __n)
+				this->reserve(this->capacity() * 2);
+			else
+				this->reserve(_old_size + __n);
+		}
+		std::copy_backward(this->begin() + __pos_d, this->end(), this->end() + __n);
+		std::uninitialized_copy(__first, __last, this->begin() + __pos_d);
+		this->_M_impl._M_finish = &(*(this->begin() + _old_size + __n));
+	} catch (...) {
+		this->_M_impl._M_end_of_storage = this->_M_impl._M_start;
+		throw;
 	}
-	std::copy_backward(this->begin() + __pos_d, this->end(), this->begin() + __pos_d + __n);
-	_M_copy_construct(__first, __last, this->_M_impl._M_start);
-	this->_M_impl._M_finish = &(*(this->begin() + _old_size + __n));
   }
 
   /*
@@ -425,13 +431,12 @@ public:
       return;
     if (__new_cap > this->max_size())
       throw std::length_error("std::length error");
-    // reallocation
+    // reallocation only if __new_cap > this->cap()
     pointer _new_pointer = this->_M_allocate(__new_cap);
 	pointer _to_free = this->_M_impl._M_start;
     size_type _size = this->size();
 
-	_M_copy_construct(this->begin(), this->end(), _new_pointer);
-	_M_range_destroy(this->_M_impl._M_start, this->size());
+	std::copy(this->begin(), this->end() ,iterator(_new_pointer));
     this->_M_deallocate(_to_free, this->_M_impl._M_end_of_storage - _to_free);
     this->_M_impl._M_start = _new_pointer;
     this->_M_impl._M_finish = _new_pointer + _size;
@@ -513,31 +518,18 @@ public:
    * |a|b|c|d|f|
    */
   iterator erase(iterator __pos) {
-	typedef typename ft::is_integral<_Tp>::type _Integral;
 	size_type __pos_d = __pos - this->begin();
-	pointer rtn = &(*(this->begin() + __pos_d));
 
     if (__pos + 1 == this->end()) {
 		this->_M_destroy(this->_M_impl._M_start + __pos_d);
 	} else {
 		size_type __pos_to_end = this->size() - __pos_d;
-		if (!_Integral()) {
-			/*
-			 * integral type need to call destroy and construct for internal element
-			 * */
-			this->_M_destroy(this->_M_impl._M_start + __pos_d);
-			for (size_type i = 0; i < __pos_to_end; i++) {
-				this->_M_construct(this->_M_impl._M_start + __pos_d + i, *(this->_M_impl._M_start + __pos_d + i + 1));
-				this->_M_destroy(this->_M_impl._M_start + __pos_d + i + 1);
-			}
-		} else {
-			size_type __pos_to_end = this->size() - __pos_d;
-			std::memmove(this->_M_impl._M_start + __pos_d, this->_M_impl._M_start + __pos_d + 1, __pos_to_end);
-		}
+		this->_M_destroy(this->_M_impl._M_start + __pos_d);
+		std::memmove(this->_M_impl._M_start + __pos_d, this->_M_impl._M_start + __pos_d + 1, __pos_to_end);
 	}
-    --this->_M_impl._M_finish;
-    return rtn;
-  }
+	--this->_M_impl._M_finish;
+	return this->begin() + __pos_d;
+}
 
   /* |0|1|2|3|4|5|
    * |a|b|c|d|e|f|
@@ -545,7 +537,6 @@ public:
    * |a|b|d|e|f|
    * */
   iterator erase(iterator __first, iterator __last) {
-	typedef typename ft::is_integral<_Tp>::type _Integral;
 	size_type __first_d = __first - this->begin();
 	size_type __last_d = __last - this->begin();
 	size_type __range_d = __last - __first;
@@ -562,18 +553,7 @@ public:
 		 * */
 		rtn = &(*(this->begin() + __first_d + __last_to_end));
 	} else {
-		if (!_Integral()) {
-			/*
-			 * integral type need to call destroy and construct for internal element
-			 * */
-			this->_M_range_destroy(this->_M_impl._M_start + __first_d, __range_d);
-			for (size_type i = 0; i < __last_to_end; i++) {
-				this->_M_construct(this->_M_impl._M_start + __first_d + i, *(this->_M_impl._M_start + __first_d + __range_d + i));
-				this->_M_destroy(this->_M_impl._M_start + __last_d + i); //destroy from __last
-			}
-		} else {
 			std::memmove(this->_M_impl._M_start + __first_d, this->_M_impl._M_start + __last_d, __last_to_end);
-		}
 	}
     this->_M_impl._M_finish -= __range_d;
 	return rtn;
