@@ -63,6 +63,11 @@ template<typename _Tp, typename _Sequence = ft::vector<_Tp> > class stack
 			return (_c.pop_back());
 		}
 
+		/*
+		 * _c is proteted member object, 
+		 * so these two friend function enable operator specialization
+		 * to compare lhs' _c and rhs' c
+		 * */
 		template<typename T, typename C>
 		friend bool operator==(const stack<T, C>& lhs, const stack<T, C>& rhs);
 	
