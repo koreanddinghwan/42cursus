@@ -7,8 +7,6 @@
 
 namespace ft {
 
-
-
 template<typename _Tp, typename _Sequence = ft::vector<_Tp> > class stack
 {
 	//typedefs
@@ -27,15 +25,13 @@ template<typename _Tp, typename _Sequence = ft::vector<_Tp> > class stack
 
 	//member functions
 	public:
-		explicit stack(const _Sequence& __cont = _Sequence()) : _c(__cont) {
-		}
+		stack(const _Sequence& __cont = _Sequence()) : _c(__cont) {}
 
 		stack(const stack& __o) {
-
+			this->_c = __o._c;
 		}
 		
 		~stack() {
-			~this->_c;
 		}
 
 		stack& operator=(const stack& __o) {
@@ -43,19 +39,75 @@ template<typename _Tp, typename _Sequence = ft::vector<_Tp> > class stack
 			return (*this);
 		}
 
-
-
 		reference top() {
-
+			return (_c.back());
 		}
 
+		const_reference top() const {
+			return (_c.back());
+		}
+
+		bool empty() const {
+			return (_c.empty());
+		}
+
+		size_type size() const {
+			return (_c.size());
+		}
+
+		void push(const value_type& value) {
+			return (_c.push_back(value));
+		}
+
+		void pop() {
+			return (_c.pop_back());
+		}
+
+		template<typename T, typename C>
+		friend bool operator==(const stack<T, C>& lhs, const stack<T, C>& rhs);
+	
+		template<typename T, typename C>
+		friend bool operator<(const stack<T, C>& lhs, const stack<T, C>& rhs);
 };
 
+//Non-member funtions
 
+template< typename _Tp, typename _Sequence >
+bool operator==( const ft::stack<_Tp,_Sequence>& lhs, const ft::stack<_Tp,_Sequence>& rhs ) 
+{
+	return (lhs._c == rhs._c);
+}
 
+template< typename _Tp, typename _Sequence >
+bool operator!=( const ft::stack<_Tp,_Sequence>& lhs, const ft::stack<_Tp,_Sequence>& rhs ) 
+{
+	return (!(lhs == rhs));
+}
+
+template< typename _Tp, typename _Sequence >
+bool operator<( const ft::stack<_Tp,_Sequence>& lhs, const ft::stack<_Tp,_Sequence>& rhs ) 
+{
+	return (lhs._c < rhs._c);
+}
+
+template< typename _Tp, typename _Sequence >
+bool operator>=( const ft::stack<_Tp,_Sequence>& lhs, const ft::stack<_Tp,_Sequence>& rhs ) 
+{
+	return !(lhs < rhs);
+}
+
+template< typename _Tp, typename _Sequence >
+bool operator>( const ft::stack<_Tp,_Sequence>& lhs, const ft::stack<_Tp,_Sequence>& rhs ) 
+{
+	return (rhs < lhs);
+}
+
+template< typename _Tp, typename _Sequence >
+bool operator<=( const ft::stack<_Tp,_Sequence>& lhs, const ft::stack<_Tp,_Sequence>& rhs ) 
+{
+	return !(rhs < lhs);
+}
 
 } //namespace ft
-
-
 
 #endif

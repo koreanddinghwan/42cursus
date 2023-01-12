@@ -1,23 +1,5 @@
-In file included from ../vector_tests/operator >=.cpp:1:
-In file included from ../vector_tests/../system/system_methods.ipp:2:
-In file included from ../vector_tests/../system/lib.hpp:30:
-../vector_tests/../system/Alloc.hpp:55:27: warning: variadic templates are a C++11 extension [-Wc++11-extensions]
-template <class _Up, class... _Args>
-                          ^
-../vector_tests/../system/Alloc.hpp:58:34: warning: rvalue references are a C++11 extension [-Wc++11-extensions]
-        construct(_Up* __p, _Args&&... __args)
-                                 ^
-../vector_tests/../system/Alloc.hpp:164:27: warning: variadic templates are a C++11 extension [-Wc++11-extensions]
-template <class _Up, class... _Args>
-                          ^
-../vector_tests/../system/Alloc.hpp:167:34: warning: rvalue references are a C++11 extension [-Wc++11-extensions]
-        construct(_Up* __p, _Args&&... __args)
-                                 ^
-In file included from ../vector_tests/operator >=.cpp:1:
-../vector_tests/../system/system_methods.ipp:8:2: warning: 'auto' type specifier is a C++11 extension [-Wc++11-extensions]
+In file included from ../stack_tests/operator >=.cpp:1:
+../stack_tests/../system/system_methods.ipp:8:2: warning: 'auto' type specifier is a C++11 extension [-Wc++11-extensions]
         auto begin = v.begin();
         ^
-5 warnings generated.
-erated.
- generated.
-enerated.
+1 warning generated.

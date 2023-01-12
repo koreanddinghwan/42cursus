@@ -1,5 +1,5 @@
 #include "../system/lib.hpp"
-#include "../../../src/vector/vector.hpp"
+#include "../../../src/vector.hpp"
 
 template <class T>
 int run_vector_unit_test(std::string test_name,

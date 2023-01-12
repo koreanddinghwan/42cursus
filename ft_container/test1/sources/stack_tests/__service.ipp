@@ -1,6 +1,5 @@
-#pragma once
 #include "../system/lib.hpp"
-#include STACK
+#include "../../../src/stack.hpp"
 
 class StackBoolTest {
 public:
