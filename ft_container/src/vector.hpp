@@ -1,8 +1,7 @@
 #ifndef FT_VECTOR_H
 #define FT_VECTOR_H
 
-#include "../utils/utils.hpp"
-#include <__memory/unique_ptr.h>
+#include "./utils/utils.hpp"
 #include <algorithm>
 #include <cstddef>
 #include <cstring>
