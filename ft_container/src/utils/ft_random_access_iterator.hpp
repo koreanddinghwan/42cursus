@@ -9,12 +9,12 @@ class random_access_iterator : public std::iterator<std::random_access_iterator_
     T* ptr_;
 
   public:
-	typedef random_access_iterator<T> iterator_type;
     typedef std::random_access_iterator_tag iterator_category;
     typedef T value_type;
     typedef ptrdiff_t difference_type;
     typedef T* pointer;
     typedef T& reference;
+	typedef T* iterator_type;
 
 	random_access_iterator() : ptr_(nullptr) {}
     random_access_iterator(T* ptr) : ptr_(ptr) {}
@@ -45,25 +45,17 @@ class random_access_iterator : public std::iterator<std::random_access_iterator_
         return tmp;
     }
 
-    random_access_iterator operator+(size_t n) const
+	template<typename _T>
+    random_access_iterator operator+(_T n) const
     {
         return random_access_iterator(ptr_ + n);
     }
 
-    random_access_iterator operator-(size_t n) const
-    {
-        return random_access_iterator(ptr_ - n);
     }
 
-    random_access_iterator operator+(int n) const
-    {
-        return random_access_iterator(ptr_ + n);
-    }
-
-    random_access_iterator operator-(int n) const
-    {
-        return random_access_iterator(ptr_ - n);
-    }
+	difference_type operator-(const random_access_iterator& o) {
+		return (this->ptr_ - o.ptr_);
+	}
 
     bool operator==(const random_access_iterator& other) const
     {
@@ -105,28 +97,15 @@ class random_access_iterator : public std::iterator<std::random_access_iterator_
         return ptr_;
     }
 
-	iterator_type& operator+=(difference_type n) { 
-		this->ptr_ += n; 
-		return *this; 
+	random_access_iterator operator += (int) {
+		this->ptr_ += 1;
+		return (this->ptr_);
 	}
 
-    iterator_type& operator-=(difference_type n) { 
-		this->ptr_ -= n; 
-		return *this; 
+	random_access_iterator operator -= (int) {
+		this->ptr_ -= 1;
+		return (this->ptr_);
 	}
-
-    iterator_type operator+(difference_type n) const { 
-		return iterator_type(this->ptr_ + n); 
-	}
-
-    iterator_type operator-(difference_type n) const { 
-		return iterator_type(this->ptr_ - n); 
-	}
-
-
-
-    difference_type operator-(const iterator_type& other) const {
-		return this->ptr_ - other.ptr_; }
 };
 
 }
