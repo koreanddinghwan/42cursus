@@ -25,6 +25,14 @@ struct is_integral<signed char> : public true_type {
 };
 
 template <>
+struct is_integral<unsigned char> : public true_type {
+};
+
+template <>
+struct is_integral<char16_t> : public true_type {
+};
+
+template <>
 struct is_integral<short int> : public true_type {
 };
 
@@ -38,10 +46,6 @@ struct is_integral<long int> : public true_type {
 
 template <>
 struct is_integral<long long int> : public true_type {
-};
-
-template <>
-struct is_integral<unsigned char> : public true_type {
 };
 
 template <>
