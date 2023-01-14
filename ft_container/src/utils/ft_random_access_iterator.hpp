@@ -51,6 +51,10 @@ class random_access_iterator : public std::iterator<std::random_access_iterator_
         return random_access_iterator(ptr_ + n);
     }
 
+	template<typename _T>
+    random_access_iterator operator-(_T n) const
+    {
+        return random_access_iterator(ptr_ - n);
     }
 
 	difference_type operator-(const random_access_iterator& o) {
