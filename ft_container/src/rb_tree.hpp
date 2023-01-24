@@ -18,7 +18,7 @@ enum _rb_tree_color {
 //tree centinel node
 //have only color, parent, left, right
 class _rb_tree_centinel_node {
-	protected:
+public:
 	typedef _rb_tree_centinel_node* _ptr;
 	typedef const _rb_tree_centinel_node* _const_ptr;
 	
@@ -27,7 +27,7 @@ class _rb_tree_centinel_node {
 	_ptr _left;
 	_ptr _right;
 
-	_ptr _node_mininum(_ptr __n)
+	static _ptr _node_mininum(_ptr __n)
 	{
 		while (__n && __n->_left) {
 			__n = __n->_left;
@@ -35,7 +35,7 @@ class _rb_tree_centinel_node {
 		return __n;
 	}
 
-	_ptr _node_maxinum(_ptr __n)
+	static _ptr _node_maxinum(_ptr __n)
 	{
 		while (__n && __n->_right) {
 			__n = __n->_right;
@@ -43,7 +43,7 @@ class _rb_tree_centinel_node {
 		return __n;
 	}
 
-	_const_ptr _const_node_mininum(_ptr __n)
+	static _const_ptr _const_node_mininum(_ptr __n)
 	{
 		while (__n && __n->_left) {
 			__n = __n->_left;
@@ -51,50 +51,21 @@ class _rb_tree_centinel_node {
 		return __n;
 	}
 
-	_const_ptr _const_node_maxinum(_ptr __n)
+	static _const_ptr _const_node_maxinum(_ptr __n)
 	{
 		while (__n && __n->_right) {
 			__n = __n->_right;
 		}
 		return __n;
-	}
-
-	/* increment */
-	_rb_tree_centinel_node* _rb_tree_increment(_rb_tree_centinel_node* __n) {
-		if (__n->_right != NULL)
-		{
-			__n = __n->_right;
-			__n = _node_mininum(__n);
-		}
-		else
-		{
-			//__n이 부모의 왼쪽자식이면 부모 그대로 반환
-			//__n이 부모의 오른쪽 자식이면 부모를 left로 가지는 부모의 부모를 타고 올라가서 끝을 반환.
-			_rb_tree_centinel_node* __p = __n->_parent;
-			while (__n == __p->_right)
-			{
-				__n = __p;
-				__p = __p->_parent;
-			}
-			//
-			if (__n->_right != __p)
-				__n = __p;
-		}
-		return __n;
-	}
-
-	_rb_tree_centinel_node* _rb_tree_decrement(_rb_tree_centinel_node* __n) {
-		
-	}
-
-	const _rb_tree_centinel_node* _rb_tree_increment(const _rb_tree_centinel_node* __n) {
-		
-	}
-
-	const _rb_tree_centinel_node* _rb_tree_decrement(const _rb_tree_centinel_node* __n) {
-		
 	}
 };
+
+/* increment */
+_rb_tree_centinel_node* _tree_increment(_rb_tree_centinel_node* __n);
+const _rb_tree_centinel_node* _tree_const_increment(const _rb_tree_centinel_node* __n); 
+
+_rb_tree_centinel_node* _tree_decrement(_rb_tree_centinel_node* __n);
+const _rb_tree_centinel_node* _tree_const_decrement(const _rb_tree_centinel_node* __n);
 
 //tree node
 template<typename _T>
@@ -116,7 +87,7 @@ class _Rb_tree_iterator {
 	typedef ptrdiff_t difference_type;
 
 	typedef _Rb_tree_iterator<_Tp> _Self;
-	typedef _rb_tree_node::_ptr _Base_ptr;
+	typedef _rb_tree_centinel_node::_ptr _Base_ptr;
 	typedef _rb_tree_node<_Tp>* _Link_Type; //inner node pointer
 	
 	//member node
@@ -137,15 +108,5 @@ class _Rb_tree_iterator {
 		return _M_node;
 	}
 };
-
-
 };
-
-
-
-
-
-};
-
-
 #endif
