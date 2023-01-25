@@ -7,63 +7,6 @@
 namespace ft
 {
 
-/* increment */
-_rb_tree_centinel_node* _rb_tree_increment(_rb_tree_centinel_node* __n) {
-	if (__n->_right != NULL)
-	{
-		__n = __n->_right;
-		__n = _rb_tree_centinel_node::_node_mininum(__n);
-	}
-	else
-	{
-		//__n이 부모의 왼쪽자식이면 부모 그대로 반환
-		//__n이 부모의 오른쪽 자식이면 부모를 left로 가지는 부모의 부모를 타고 올라가서 끝을 반환.
-		_rb_tree_centinel_node* __p = __n->_parent;
-		while (__n == __p->_right)
-		{
-			__n = __p;
-			__p = __p->_parent;
-		}
-		//stl rbtree의 sentinel node는 left, right, parent가 동일한 노드를 가리킨다.
-		if (__n->_right != __p)
-			__n = __p;
-	}
-	return __n;
-}
-
-const _rb_tree_centinel_node* _rb_tree_const_increment(const _rb_tree_centinel_node* __n) {
-	return _rb_tree_increment(const_cast<_rb_tree_centinel_node *>(__n));	
-}
-
-
-_rb_tree_centinel_node* _rb_tree_decrement(_rb_tree_centinel_node* __n) {
-
-	//현재 노드가 sentinel node인경우, decrement는 
-	if (__n->_color == _red && __n->_parent->_parent == __n)
-		__n = __n->_right;
-	else if (__n->_left != NULL)
-	{
-		//left에서 right most
-		_rb_tree_centinel_node *__left = __n->_left;
-		__left =  _rb_tree_centinel_node::_node_maxinum(__left);
-		__n = __left;
-	}
-	else
-	{
-		_rb_tree_centinel_node *__p = __n->_parent;
-		while (__n == __p->_left)
-		{
-			__n = __p;
-			__p = __p->_parent;
-		}
-		__n = __p;
-	}
-	return __n;
-}
-
-const _rb_tree_centinel_node* _rb_tree_const_decrement(const _rb_tree_centinel_node* __n) {
-	return _tree_decrement(const_cast<_rb_tree_centinel_node *>(__n));	
-}
 
 
 
@@ -71,13 +14,13 @@ const _rb_tree_centinel_node* _rb_tree_const_decrement(const _rb_tree_centinel_n
  * utils
  * */
 
-_rb_tree_centinel_node *_get_node_grand_parent(_rb_tree_centinel_node *__n) {
+_rb_tree_sentinel_node *_get_node_grand_parent(_rb_tree_sentinel_node *__n) {
 	return (__n->_parent->_parent);
 }
 
-_rb_tree_centinel_node *_get_node_uncle(_rb_tree_centinel_node *__n) {
+_rb_tree_sentinel_node *_get_node_uncle(_rb_tree_sentinel_node *__n) {
 	//부모의 오른쪽 자식인 경우,
-	_rb_tree_centinel_node *_gp = _get_node_grand_parent(__n);
+	_rb_tree_sentinel_node *_gp = _get_node_grand_parent(__n);
 
 	if (_gp->_right == __n->_parent)
 		return (_gp->_left);
@@ -85,15 +28,15 @@ _rb_tree_centinel_node *_get_node_uncle(_rb_tree_centinel_node *__n) {
 		return (_gp->_right);
 }
 
-const bool _is_root(_rb_tree_centinel_node *__n) {
-	_rb_tree_centinel_node *_gp = _get_node_grand_parent(__n);
+const bool _is_root(_rb_tree_sentinel_node *__n) {
+	_rb_tree_sentinel_node *_gp = _get_node_grand_parent(__n);
 	if (_gp == __n)
 		return true;
 	else
 		return false;
 }
 
-const bool _is_leaf(_rb_tree_centinel_node *__n) {
+const bool _is_leaf(_rb_tree_sentinel_node *__n) {
 	if (__n->_color == _black
 		&& !(__n->_left) && !(__n->_right)
 		)
@@ -118,10 +61,10 @@ const bool _is_leaf(_rb_tree_centinel_node *__n) {
  *                 __cl   __cr           __b  __cl
  * */
 void _rb_tree_rotate_left(
-		_rb_tree_centinel_node * const __n,
-		_rb_tree_centinel_node* &__root) {
+		_rb_tree_sentinel_node * const __n,
+		_rb_tree_sentinel_node* &__root) {
 	
-	_rb_tree_centinel_node *__c = __n->_right;
+	_rb_tree_sentinel_node *__c = __n->_right;
 
 	//__cl
 	__n->_right = __c->_left;
@@ -154,10 +97,10 @@ void _rb_tree_rotate_left(
  *   __cl __cr                            __cr  __b
  * */
 void _rb_tree_rotate_right(
-		_rb_tree_centinel_node * const __n,
-		_rb_tree_centinel_node* &__root) {
+		_rb_tree_sentinel_node * const __n,
+		_rb_tree_sentinel_node* &__root) {
 	
-	_rb_tree_centinel_node *__c = __n->_left;
+	_rb_tree_sentinel_node *__c = __n->_left;
 
 	//__cr
 	__n->_left = __c->_right;
@@ -179,16 +122,16 @@ void _rb_tree_rotate_right(
 
 
 void rebalancing_case1(
-		_rb_tree_centinel_node *__n,
-		_rb_tree_centinel_node &__h
+		_rb_tree_sentinel_node *__n,
+		_rb_tree_sentinel_node &__h
 );
 
 //ll, rr case
 void rebalancing_case5(
-		_rb_tree_centinel_node *__n,
-		_rb_tree_centinel_node &__h
+		_rb_tree_sentinel_node *__n,
+		_rb_tree_sentinel_node &__h
 		) {
-	_rb_tree_centinel_node *__gp = _get_node_grand_parent(__n);
+	_rb_tree_sentinel_node *__gp = _get_node_grand_parent(__n);
 
 	__n->_parent->_color = _black;
 	__gp->_color = _red;
@@ -200,11 +143,11 @@ void rebalancing_case5(
 
 // lr, rl case to ll, rr case
 void rebalancing_case4(
-		_rb_tree_centinel_node *__n,
-		_rb_tree_centinel_node &__h
+		_rb_tree_sentinel_node *__n,
+		_rb_tree_sentinel_node &__h
 		) {
 
-	_rb_tree_centinel_node *__gp = _get_node_grand_parent(__n);
+	_rb_tree_sentinel_node *__gp = _get_node_grand_parent(__n);
 
 	if (//lr case to ll case
 		__n == __n->_parent->_right
@@ -226,11 +169,11 @@ void rebalancing_case4(
 }
 
 void rebalancing_case3 (
-		_rb_tree_centinel_node *__n,
-		_rb_tree_centinel_node &__h
+		_rb_tree_sentinel_node *__n,
+		_rb_tree_sentinel_node &__h
 		) {
-	_rb_tree_centinel_node *__gp;
-	_rb_tree_centinel_node *__u = _get_node_uncle(__n);
+	_rb_tree_sentinel_node *__gp;
+	_rb_tree_sentinel_node *__u = _get_node_uncle(__n);
 
 	if ((__u != NULL) && (__u->_color == _red)) {
 		__n->_parent->_color = _black;
@@ -244,8 +187,8 @@ void rebalancing_case3 (
 }
 
 void rebalancing_case2 (
-		_rb_tree_centinel_node *__n,
-		_rb_tree_centinel_node &__h
+		_rb_tree_sentinel_node *__n,
+		_rb_tree_sentinel_node &__h
 		) {
 	if (__n->_parent->_color == _black)
 		return ;
@@ -254,8 +197,8 @@ void rebalancing_case2 (
 }
 
 void rebalancing_case1 (
-		_rb_tree_centinel_node *__n,
-		_rb_tree_centinel_node &__h
+		_rb_tree_sentinel_node *__n,
+		_rb_tree_sentinel_node &__h
 		) {
 	
 	if (_is_root(__n))
@@ -267,9 +210,9 @@ void rebalancing_case1 (
 
 void _rb_tree_insert_rebalance(
 		const bool _insert_left,
-		_rb_tree_centinel_node* __n,
-		_rb_tree_centinel_node* __p,
-		_rb_tree_centinel_node& __h
+		_rb_tree_sentinel_node* __n,
+		_rb_tree_sentinel_node* __p,
+		_rb_tree_sentinel_node& __h
 		) {
 
 	//삽입 노드 초기화
@@ -301,7 +244,7 @@ void _rb_tree_insert_rebalance(
 	}
 
 	//rebalancing
-	rebalancing_case1(__n, __p, __h);
+	rebalancing_case1(__n, __h);
 }
 
 };
