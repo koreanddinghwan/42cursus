@@ -378,13 +378,18 @@ inline void rebalancing_case1 (
 		_rb_tree_sentinel_node &__h
 		) {
 	
-	if (_is_root(__n))
+	if (__n == &(__h))
 		__n->_color = _black;
 	else
 		rebalancing_case2(__n, __h);
 }
 
-
+/*
+ * @param _insert_left determine whether insert left or right
+ * @param __n node to insert
+ * @param __p parent node
+ * @param __h header node(end node)
+ * */
 inline void _rb_tree_insert_rebalance(
 		const bool _insert_left,
 		_rb_tree_sentinel_node* __n,
@@ -428,7 +433,7 @@ inline void _rb_tree_insert_rebalance(
 
 template<typename _Key, 
 	typename _Value, 
-	typename _KeyOfValue, // == _Compare
+	typename _KeyOfValue, // if map-> select1st, set-> identity
 	typename _Compare,  
 	typename _Alloc = std::allocator<_Value> >
 class _RB_tree {
@@ -503,6 +508,41 @@ class _RB_tree {
 	/*
 	 * internal methods
 	 * */
+
+	Link_Type _M_get_node() {
+		return this->_M_impl.node_allocator::allocate(1);
+	}
+
+	void _M_put_node(Link_Type p) {
+		this->_M_impl.node_allocator::deallocate(p, 1);
+	}
+
+	Link_Type _M_create_node(const value_type& __v) {
+		Link_Type tmp = _M_get_node();
+		try {
+			this->get_allocator().construct(&tmp->_value_field, __v);
+		} catch(...) {
+			this->_M_put_node(tmp);
+			throw;
+		}
+		return tmp;
+	}
+
+	Link_Type _M_clone_node(Const_Link_Type __o) {
+		Link_Type tmp = this->_M_create_node(__o->_value_field);
+		tmp->_color = __o->_color;
+		tmp->_left = NULL;
+		tmp->_right = NULL;
+		return tmp;
+	}
+
+	//call destructors
+	void destroy_node(Link_Type __o) {
+		get_allocator().destroy(&__o->_value_field);
+		_M_put_node(__o);
+	}
+
+
 	/*
 	 * return first node
 	 * if empty, return null
@@ -581,10 +621,132 @@ class _RB_tree {
 		{}
 		_RB_tree(const _Compare& __cmp) : _M_impl(allocator_type(), __cmp)
 		{}
-		_RB_tree(const _RB_tree<_Key, _Value, _KeyOfValue, _Compare>& __o): _M_impl() {
-			
+		_RB_tree(const _RB_tree<_Key, 
+				_Value, 
+				_KeyOfValue, 
+				_Compare>& __o): _M_impl(__o.get_allocator(), __o._M_impl._M_key_cmp) 
+		{
+			if (__o._M_root() != NULL)
+			{
+				//copy
+			}
 		}
 
+		~_RB_tree() {
+			//erase
+		}
+
+
+	//interface methods
+
+	size_type size() const {
+		return (this->_M_impl._M_node_cnt);
+	}
+
+
+	/*
+	 * create node by __v and insert
+	 *@param __n node
+	 *@param __p node's parent
+	 *@param __v value to insert
+	 * */
+	typename _RB_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::iterator
+	_M_insert(_ptr __n, _ptr __p, const _Value& __v) {
+		bool __insert_left = 
+			(__n != NULL //first arg == not null
+			 || __p == this->_M_end() //header node
+			 || this->_M_impl._M_key_cmp(_KeyOfValue()(__v), _S_key(__p))); //key of __v < key of __p
+			
+		Link_Type __new = this->_M_create_node(__v);
+		_rb_tree_insert_rebalance(
+				__insert_left, 
+				__new, __p, this->_M_impl._M_header);
+		this->_M_impl._M_node_cnt++;
+		return iterator(__new);
+	}
+
+	/*
+	 * */
+	ft::pair<typename _RB_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::iterator, bool> 
+	insert_unique() {}
+
+	/*
+	 * @param __v value to insert
+	 * */
+	typename _RB_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::iterator
+	insert_equal(const _Value& __v) {
+		Link_Type __a = this->_M_begin();//header->parent is start node
+		Link_Type __b = this->_M_end(); //end is header
+
+		//find position to insert
+		while (__a != NULL) {
+				//update parent
+				__b = __a;
+				//get node by compare function,
+				//if true-> __a updated to __a->_left;
+				//else __a->right;
+				__a = this->_M_impl._M_key_cmp(
+						_KeyOfValue()(__v), _S_key(__v)
+						) ? _S_left(__a) : _S_right(__a);
+		}
+		return _M_insert(__a, __b, __v);
+	}
+
+	/*
+	 * @param __pos	iterator that pointing position to insert __v
+	 * @param __v	value to insert in __pos
+	 * */
+	typename _RB_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::iterator
+	insert_equal(iterator __pos, const _Value& __v) {
+
+		if (__pos.__n == this->_M_end()) //__pos == header
+		{
+			// insert into right-most node's right node
+			if (size() > 0 && _M_impl._M_key_cmp(
+						_S_key(_M_rightmost()), _KeyOfValue()(__v)))
+				return _M_insert(NULL, _M_rightmost(), __v);
+			else
+				return insert_equal(__v);
+		}
+		//if key of __v <= key of __pos.node
+		else if (!_M_impl._M_key_cmp(
+					_S_key(__pos.__n), _KeyOfValue()(__v)
+					))
+		{
+			iterator decre = __pos;
+			if (__pos.__n == this->_M_leftmost())//insert in left node
+				return _M_insert(_M_leftmost(), _M_leftmost(), __v);
+			else if (!_M_impl._M_key_cmp(
+						_KeyOfValue((--decre).__n), _S_key(__v)
+						))//key of decre.node  <= key of __v <= key of __pos.node
+			{
+				if (_S_right(decre.__n) == NULL)// parent's right(__pos) is null
+					return _M_insert(0, decre.__n, __v);
+				else
+					return _M_insert(__pos.__n, __pos.__n, __v);
+			}
+			else //key of __v <= key of decre.node and key of __pos.node
+				return insert_equal(__v);
+		}
+		else //key of __v > key of pos.node
+		{
+			iterator incre = __pos;
+			if (__pos.__n == _M_rightmost())
+				return _M_insert(_M_rightmost(), _M_rightmost(), __v);
+			else if (!_M_impl._M_key_cmp(
+						_S_key((++incre).__n), _KeyOfValue(__v)
+						)) //key of pos.node < key of __v <= key of incre
+			{
+				if (_S_right(__pos.__n) == NULL)
+					return _M_insert(NULL, __pos.__n, __v);
+				else
+					return _M_insert(incre.__n, incre.__n, __v);
+			}
+			else
+				return insert_equal(__v);
+		}
+
+	}
 };
 
 
