@@ -155,6 +155,7 @@ class _rb_tree_iterator : public _rb_tree_iterator_base
 	_rb_tree_iterator() {}
 	_rb_tree_iterator(link_type __o) {__n = __o;}
 	_rb_tree_iterator(iterator __it) {__n = __it.__n;}
+	_rb_tree_iterator(const_iterator __it) {__n = __it.__n;}
 
 	reference operator*() const {
 		return link_type(__n)->_value_field;
@@ -635,6 +636,34 @@ class _RB_tree {
 		~_RB_tree() {
 			//erase
 		}
+		
+		//iterators : bidirectional_iterator,
+		iterator begin() {
+			return static_cast<Link_Type>(this->_M_impl._M_left);
+		}
+		const_iterator begin() const {
+			return static_cast<Const_Link_Type>(this->_M_impl._M_left);
+		}
+
+		iterator end() {
+			return static_cast<Link_Type>(this->_M_impl._M_right);
+		}
+		const_iterator end() const {
+			return static_cast<Const_Link_Type>(this->_M_impl._M_right);
+		}
+
+		reverse_iterator rbegin() {
+			return reverse_iterator(this->end());
+		}
+		const_reverse_iterator rbegin() const {
+			return const_reverse_iterator(this->end());
+		}
+
+		reverse_iterator rend() {
+			return reverse_iterator(this->begin());
+		}
+
+
 
 
 	//interface methods
@@ -668,7 +697,32 @@ class _RB_tree {
 	/*
 	 * */
 	ft::pair<typename _RB_tree<_Key, _Value, _KeyOfValue, _Compare, _Alloc>::iterator, bool> 
-	insert_unique() {}
+	insert_unique(const _Value& __v) {
+	Link_Type __a = this->_M_begin();
+	Link_Type __b = this->_M_end();
+	bool comp = true;
+
+	while (__a != NULL) {
+		__b = __a;
+		comp = this->_M_impl._M_key_cmp(
+				_KeyOfValue()(__v), _S_key(__a)
+				); //key of __v < key of __a;
+		__a = comp ? _S_left(__a) : _S_right(__a);
+	}
+	//__a is node to insert. and NULL
+	//__b is __a's parent
+
+	iterator __p = iterator(__b);
+	if (comp)//comp true means that found exact position without key of __v >= key of __a;
+	{
+		if (__p == begin())
+			return ft::pair<iterator, bool>(_M_insert(__a, __b, __v), true);
+		else
+			--__b;
+	}
+
+
+	}
 
 	/*
 	 * @param __v value to insert
@@ -686,7 +740,7 @@ class _RB_tree {
 				//if true-> __a updated to __a->_left;
 				//else __a->right;
 				__a = this->_M_impl._M_key_cmp(
-						_KeyOfValue()(__v), _S_key(__v)
+						_KeyOfValue()(__v), _S_key(__a)
 						) ? _S_left(__a) : _S_right(__a);
 		}
 		return _M_insert(__a, __b, __v);
@@ -737,15 +791,21 @@ class _RB_tree {
 						_S_key((++incre).__n), _KeyOfValue(__v)
 						)) //key of pos.node < key of __v <= key of incre
 			{
-				if (_S_right(__pos.__n) == NULL)
+				if (_S_right(__pos.__n) == NULL) //right node is empty=> incre is parent
 					return _M_insert(NULL, __pos.__n, __v);
-				else
+				else//right node is not empty=> __incre is right child
 					return _M_insert(incre.__n, incre.__n, __v);
 			}
 			else
 				return insert_equal(__v);
 		}
+	}
 
+	template <typename _It>
+	void insert_equal(_It __first, _It __second) {
+		for (; __first != __second; __first++) {
+			insert_equal(end(), *__first);
+		}
 	}
 };
 
