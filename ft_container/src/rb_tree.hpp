@@ -755,6 +755,31 @@ public:
   }
 
   /*
+   * initialize tree
+   * */
+  void clear() {
+    // from root
+    _M_erase(_M_begin());
+    // leftmost update to header
+    _M_leftmost() = _M_end();
+    _M_root() = NULL;
+    _M_rightmost() = _M_end();
+    _M_impl._M_node_cnt = 0;
+  }
+
+  /*
+   * @param __n : erase without rebalancing from __n
+   * */
+  void _M_erase(Link_Type __n) {
+    while (__n != NULL) {
+      _M_erase(_S_right(__n));
+      Link_Type __x = _S_left(__n);
+      destroy_node(__n);
+      __n = __x;
+    }
+  }
+
+  /*
    * create node by __v and insert
    *@param __n node
    *@param __p position to insert node
@@ -872,6 +897,30 @@ public:
   template <typename _It> void insert_unique(_It first, _It last) {
     for (; first != last; first++) {
       insert_unique(*first);
+    }
+  }
+
+  // deletion
+  void erase(iterator __pos) {
+    Link_Type __y = static_cast<Link_Type>(
+        _rb_tree_erase_rebalancing(__pos.__n, this->_M_impl._M_header));
+    destroy_node(__y);
+    --this->_M_impl._M_node_cnt;
+  }
+
+  size_type erase(const _Key &__k) {
+    ft::pair<iterator, iterator> __p = this->equal_range(__k);
+    size_type __n = std::distance(__p.first, __p.second);
+    erase(__p.first, __p.second);
+    return __n;
+  }
+
+  void erase(iterator __f, iterator __l) {
+    if (__f == this->begin() && __l == this->end())
+      clear();
+    else {
+      while (__f != __l)
+        erase(__f++);
     }
   }
 
