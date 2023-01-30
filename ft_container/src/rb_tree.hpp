@@ -389,8 +389,9 @@ inline void _rb_tree_insert_rebalance(const bool _insert_left,
  * case2 : delete node who have only left child
  * case3 : delete node who have only right child
  * */
-inline void _rb_tree_erase_rebalancing(_rb_tree_sentinel_node *const __z,
-                                       _rb_tree_sentinel_node &__header) {
+inline _rb_tree_sentinel_node *
+_rb_tree_erase_rebalancing(_rb_tree_sentinel_node *const __z,
+                           _rb_tree_sentinel_node &__header) {
   _rb_tree_sentinel_node *&__root = __header._parent;
   _rb_tree_sentinel_node *&__leftmost = __header._left;
   _rb_tree_sentinel_node *&__rightmost = __header._right;
@@ -411,7 +412,7 @@ inline void _rb_tree_erase_rebalancing(_rb_tree_sentinel_node *const __z,
     __x = __y->_right;
   }
 
-  ///////////////
+  ///////////////case 1
   if (__y != __z) { //=> z has two non-null child
                     // relink __z(deleted node) with childs
     __z->_left->_parent = __y;
@@ -460,10 +461,69 @@ inline void _rb_tree_erase_rebalancing(_rb_tree_sentinel_node *const __z,
       }
     }
   }
-  if (__y->_color != _red) {
-    while () {
+  // rebalancing
+  if (__y->_color == _black) {
+    while (__x != __root && (__x == NULL || __x->_color == _black)) {
+      if (__x == __x->_parent->_left) {
+        _rb_tree_sentinel_node *__w = __x_parent->_right;
+        // type 1
+        if (__w->_color == _red) {
+          __w->_color = _black;
+          __x->_parent->_color = _red;
+          _rb_tree_rotate_left(__x_parent, __root);
+          __w = __x_parent->_right;
+        }
+        // type2
+        if ((__w->_left == NULL || __w->_left->_color == _black) &&
+            (__w->_right == NULL || __w->_right->_color == _black)) {
+          __w->_color = _red;
+          __x = __x_parent;
+          __x_parent = __x_parent->_parent;
+        } else {
+          // type3
+          if (__w->_right == NULL || __w->_right->_color == _black) {
+            __w->_left->_color = _black;
+            __w->_color = _red;
+            _rb_tree_rotate_right(__w, __root);
+            __w = __x_parent->_right;
+          }
+          // type 4
+          __w->_color = __x_parent->_color;
+          __x_parent->_color = _black;
+          if (__w->_right)
+            __w->_right->_color = _black;
+          _rb_tree_rotate_left(__x_parent, __root);
+          break;
+        }
+      } else { // reverse right <-> left
+        _rb_tree_sentinel_node *__w = __x_parent->_left;
+        if (__w->_color == _red) {
+          __w->_color = _black;
+          __x->_parent->_color = _red;
+          _rb_tree_rotate_right(__x_parent, __root);
+          __w = __x_parent->_left;
+        }
+        if ((__w->_right == 0 || __w->_right->_color == _black) &&
+            (__w->_left == 0 || __w->_left->_color == _black)) {
+          __w->_color = _red;
+          __x = __x_parent;
+          __x_parent = __x_parent->_parent;
+        } else {
+          if (__w->_left == 0 || __w->_left->_color == _black) {
+            __w->_right->_color = _black;
+            __w->_color = _red;
+            _rb_tree_rotate_left(__w, __root);
+            __w = __x_parent->_left;
+          }
+          __w->_color = __x_parent->_color;
+          __x_parent->_color = _black;
+          if (__w->_left)
+            __w->_left->_color = _black;
+          _rb_tree_rotate_right(__x_parent, __root);
+          break;
+        }
+      }
     }
-
     if (__x)
       __x->_color = _black;
   }
@@ -742,8 +802,8 @@ public:
     //__b is __a's parent
 
     iterator __p = iterator(__b);
-    if (comp) // comp true means that found exact position at last without key
-              // of __v >= key of __a;
+    if (comp) // comp true means that found exact position at last without
+              // key of __v >= key of __a;
     {
       // if upper while statement only looped once -> normally insert
       if (__p == begin())
