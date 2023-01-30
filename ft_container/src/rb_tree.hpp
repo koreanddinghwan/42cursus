@@ -761,6 +761,21 @@ public:
     _M_erase(_M_begin());
   }
 
+  _RB_tree<_Key, _Value, _KeyOfValue, _Compare>
+  operator=(const _RB_tree<_Key, _Value, _KeyOfValue, _Compare> &__o) {
+    if (this != &__o) {
+      clear();
+      _M_impl._M_key_cmp = __o._M_impl._M_key_cmp;
+      if (__o._M_root() != NULL) {
+        _M_root() = _M_copy(__o._M_begin(), _M_end());
+        _M_leftmost() = _S_minimum(_M_root());
+        _M_rightmost() = _S_maximum(_M_root());
+        _M_impl._M_node_cnt = __o._M_impl._M_node_cnt;
+      }
+    }
+    return *this;
+  }
+
   // iterators : bidirectional_iterator,
   iterator begin() { return static_cast<Link_Type>(this->_M_impl._M_left); }
   const_iterator begin() const {
