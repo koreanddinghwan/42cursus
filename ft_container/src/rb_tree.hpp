@@ -618,7 +618,7 @@ protected:
     Link_Type tmp = _M_get_node();
     try {
       this->get_allocator().construct(&tmp->_value_field, __v);
-    } catch (...) {
+    } catch (...) { // throw if construct err
       this->_M_put_node(tmp);
       throw;
     }
@@ -922,6 +922,90 @@ public:
       while (__f != __l)
         erase(__f++);
     }
+  }
+
+  /*
+   * @param __o :  tree to swap
+   * */
+  void swap(_RB_tree<_Key, _Value, _KeyOfValue, _Compare> &__o) {
+    // this tree is empty
+    if (this->_M_root() == NULL) {
+      // and other tree is not empty
+      if (__o._M_root()) {
+        _M_root() = __o._M_root();
+        _M_leftmost() = __o._M_leftmost();
+        _M_rightmost() = __o._M_rightmost();
+        _M_root()->_parent = _M_end();
+
+        __o._M_root() = NULL;
+        __o._M_leftmost() = __o._M_end();
+        __o._M_rightmost() = __o._M_end();
+      }
+
+      // other tree is empty
+    } else if (__o._M_root() == NULL) {
+      __o._M_root() = _M_root();
+      __o._M_leftmost() = _M_leftmost();
+      __o._M_rightmost() = _M_rightmost();
+      __o._M_root()->_parent = __o._M_end();
+
+      _M_root() = NULL;
+      _M_rightmost() = _M_end();
+      _M_leftmost() = _M_end();
+
+      // both not empty
+    } else {
+      std::swap(_M_root(), __o._M_root());
+      std::swap(_M_leftmost(), __o._M_leftmost());
+      std::swap(_M_rightmost(), __o._M_rightmost());
+
+      _M_root()->_parent = _M_end();
+      __o._M_root()->_parent = __o._M_end();
+    }
+
+    std::swap(this->_M_impl._M_node_cnt, __o._M_impl._M_node_cnt);
+    std::swap(this->_M_impl._M_key_cmp, __o._M_impl._M_key_cmp);
+  }
+
+  /*
+   * @param __k : key to find
+   * */
+  iterator find(const _Key &__k) {
+    Link_Type __x = this->_M_begin();
+    Link_Type __y = this->_M_end();
+
+    while (__x) {
+      if (!this->_M_impl._M_key_cmp(_S_key(__x), __k)) {
+        __y = __x;
+        __x = _S_left(__x);
+      } else
+        __x = _S_right(__x);
+    }
+    iterator __j = iterator(__y);
+    // not found
+    if (__j == end() || this->_M_impl._M_key_cmp(__k, _S_key(__j.__n)))
+      return end();
+    else // found
+      return __j;
+  }
+
+  const_iterator find(const _Key &__k) const {
+    Const_Link_Type __x = this->_M_begin();
+    Const_Link_Type __y = this->_M_end();
+
+    while (__x) {
+      if (!this->_M_impl._M_key_cmp(_S_key(__x), __k)) {
+        __y = __x;
+        __x = _S_left(__x);
+      } else
+        __x = _S_right(__x);
+    }
+    const_iterator __j = const_iterator(__y);
+    // not found
+    if (__j == end() || this->_M_impl._M_key_cmp(__k, _S_key(__j.__n)))
+      return end();
+    else // found
+      return __j;
   }
 
   // boundary
