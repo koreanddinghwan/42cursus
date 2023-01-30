@@ -633,6 +633,43 @@ protected:
     return tmp;
   }
 
+  /*
+   * recursively copy from __x, parent is __p
+   *           __x
+   *        __y     /
+   *whileloop \   /   /
+   *         \ \ / / / /
+   * */
+  Link_Type _M_copy(Const_Link_Type __x, Link_Type __p) {
+    Link_Type __top = _M_clone_node(__x);
+    __top->_parent = __p;
+
+    try {
+      if (__x->_right)
+        __top->_right =
+            _M_copy(_S_right(__x), __top); // get copy of  right subtree
+      __p = __top;
+      __x = _S_left(__x);
+
+      //__x = left subtree start
+      while (__x) {
+        Link_Type __y = _M_clone_node(__x);
+        __p->_left = __y;
+        __y->_parent = __p;
+        if (__x->_right) {
+          __y->_right = _M_copy(_S_right(__x), __y);
+        }
+        __p = __y;
+        __x = _S_left(__x);
+      }
+
+    } catch (...) { // catch if construct err
+      _M_erase(__top);
+      throw;
+    }
+    return __top;
+  }
+
   // call destructors
   void destroy_node(Link_Type __o) {
     get_allocator().destroy(&__o->_value_field);
@@ -703,18 +740,25 @@ protected:
 
 public:
   _RB_tree() {}
+
   _RB_tree(const _Compare &__cmp, const allocator_type &__a)
       : _M_impl(__a, __cmp) {}
+
   _RB_tree(const _Compare &__cmp) : _M_impl(allocator_type(), __cmp) {}
+
   _RB_tree(const _RB_tree<_Key, _Value, _KeyOfValue, _Compare> &__o)
       : _M_impl(__o.get_allocator(), __o._M_impl._M_key_cmp) {
     if (__o._M_root() != NULL) {
-      // copy
+      _M_root() = _M_copy(__o._M_begin(), _M_end());
+      _M_leftmost() = _S_minimum(_M_root());
+      _M_rightmost() = _S_maximum(_M_root());
+      _M_impl._M_node_cnt = __o._M_impl._M_node_cnt;
     }
   }
 
   ~_RB_tree() {
     // erase
+    _M_erase(_M_begin());
   }
 
   // iterators : bidirectional_iterator,
