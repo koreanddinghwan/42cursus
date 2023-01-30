@@ -380,6 +380,96 @@ inline void _rb_tree_insert_rebalance(const bool _insert_left,
   rebalancing_case1(__n, __h);
 }
 
+/*
+ * @param __n : node to delete
+ * @param __header : header node
+ * case1 : delete node with 2 child => copy left subtree's rightmost || right
+ * subtree's leftmost
+ *
+ * case2 : delete node who have only left child
+ * case3 : delete node who have only right child
+ * */
+inline void _rb_tree_erase_rebalancing(_rb_tree_sentinel_node *const __z,
+                                       _rb_tree_sentinel_node &__header) {
+  _rb_tree_sentinel_node *&__root = __header._parent;
+  _rb_tree_sentinel_node *&__leftmost = __header._left;
+  _rb_tree_sentinel_node *&__rightmost = __header._right;
+  _rb_tree_sentinel_node *__y = __z;
+  _rb_tree_sentinel_node *__x = NULL;
+  _rb_tree_sentinel_node *__x_parent = NULL;
+
+  //////////prerequisite
+  if (__y->_left == NULL)       //__z at most one non-null child, __y == __z
+    __x = __y->_right;          //__x might be null
+  else if (__y->_right == NULL) //__z have exact one child, __y == __z
+    __x = __y->_left;           //__x is not null
+  else {                        //__z has two non-null child
+    __y = __y->_right;
+    while (__y->_left != NULL) {
+      __y = __y->_left;
+    }
+    __x = __y->_right;
+  }
+
+  ///////////////
+  if (__y != __z) { //=> z has two non-null child
+                    // relink __z(deleted node) with childs
+    __z->_left->_parent = __y;
+    __y->_left = __z->_parent;
+    // if __y is exact child of __z
+    if (__y != __z->_right) {
+      __x->_parent = __y->_parent;
+      if (__x) //_x might be null
+        __x->_parent = __y->_parent;
+      __y->_parent->_left = __x;  // update __y parent
+      __y->_right = __z->_right;  // update __y's right child link
+      __z->_right->_parent = __y; //
+    } else                        //__y is not child of __z
+      __x_parent = __y;
+    if (__root == __z) // update root
+      __root = __y;
+    else if (__z->_parent->_left == __z) // update left child of __z's parent
+      __z->_parent->_left = __y;
+    else // update right child of __z's parent
+      __z->_parent->_right = __y;
+    __y->_parent = __z->_parent;
+    std::swap(__y->_color, __z->_color);
+    __y = __z;
+  } else {                       //=> z has at most one non-null child
+    __x->_parent = __y->_parent; //__y == __z
+    if (__x)                     //__x might be null
+      __x->_parent = __y->_parent;
+    if (__root == __z) // update root
+      __root = __x;
+    else if (__z->_parent->_left == __z) // update __z parent's link
+      __z->_parent->_left = __x;
+    else
+      __z->_parent->_right = __x;
+    if (__leftmost == __z) // if __z == leftmost
+    {
+      if (__z->_right == NULL) // if __x is null, left most is __z's parent
+        __leftmost = __z->_parent;
+      else // else, __x's leftmost
+        __leftmost = _rb_tree_sentinel_node::_node_mininum(__x);
+    }
+    if (__rightmost == __z) { //__z == rightmost
+      if (__z->_left == NULL) {
+        __rightmost = __z->_parent;
+      } else {
+        __rightmost = _rb_tree_sentinel_node::_node_maxinum(__x);
+      }
+    }
+  }
+  if (__y->_color != _red) {
+    while () {
+    }
+
+    if (__x)
+      __x->_color = _black;
+  }
+  return __y;
+}
+
 template <typename _Key, typename _Value,
           typename _KeyOfValue, // if map-> select1st, set-> identity
           typename _Compare, typename _Alloc = std::allocator<_Value>>
@@ -586,8 +676,23 @@ public:
   reverse_iterator rend() { return reverse_iterator(this->begin()); }
 
   // interface methods
-
   size_type size() const { return (this->_M_impl._M_node_cnt); }
+  size_type max_size() const { return size_type(-1); }
+
+  size_type count(const _Key &__v) const {
+    size_type cnt = 0;
+
+    iterator __begin = this->begin();
+    iterator __end = this->end();
+
+    for (; __begin != __end; __begin++) {
+      if (this->_M_impl._KeyOfValue()(__v) == _S_key(*__begin)) {
+        cnt++;
+        break;
+      }
+    }
+    return cnt;
+  }
 
   /*
    * create node by __v and insert
@@ -703,7 +808,82 @@ public:
            // not insert
       return __pos;
   }
-};
+
+  template <typename _It> void insert_unique(_It first, _It last) {
+    for (; first != last; first++) {
+      insert_unique(*first);
+    }
+  }
+
+  // boundary
+  iterator upper_bound(const _Key &__k) {
+    Link_Type __a = this->_M_begin();
+    Link_Type __b = this->_M_end(); // returning node that greater than _k
+
+    while (__a != NULL) {
+      if (this->_M_impl._M_key_cmp(__k, _S_key(__a))) {
+        __b = __a;
+        __a = _S_left(__a);
+      } else
+        __a = _S_right(__a);
+    }
+    return iterator(__b);
+  }
+
+  const_iterator upper_bound(const _Key &__k) const {
+    Const_Link_Type __a = this->_M_begin();
+    Const_Link_Type __b = this->_M_end();
+
+    while (__a != NULL) {
+      if (this->_M_impl._M_key_cmp(__k, _S_key(__a))) {
+        __b = __a;
+        __a = _S_left(__a);
+      } else
+        __a = _S_right(__a);
+    }
+    return const_iterator(__b);
+  }
+
+  iterator lower_bound(const _Key &__k) {
+    Link_Type __a = this->_M_begin();
+    Link_Type __b = this->_M_end(); // returning node that is not less than _k
+
+    while (__a != NULL) {
+      //__a >= __k
+      if (!this->_M_impl._M_key_cmp(_S_key(__a), __k)) {
+        __b = __a;
+        __a = _S_left(__a);
+      } else
+        __a = _S_right(__a);
+    }
+    return iterator(__b);
+  }
+
+  const_iterator lower_bound(const _Key &__k) const {
+    Const_Link_Type __a = this->_M_begin();
+    Const_Link_Type __b = this->_M_end();
+
+    while (__a != NULL) {
+      //__a >= __k
+      if (!this->_M_impl._M_key_cmp(_S_key(__a), __k)) {
+        __b = __a;
+        __a = _S_left(__a);
+      } else
+        __a = _S_right(__a);
+    }
+    return const_iterator(__b);
+  }
+
+  inline ft::pair<iterator, iterator> equal_range(const _Key &__k) {
+    return ft::pair<iterator, iterator>(lower_bound(__k), upper_bound(__k));
+  }
+  inline ft::pair<const_iterator, const_iterator>
+  equal_range(const _Key &__k) const {
+    return ft::pair<const_iterator, const_iterator>(lower_bound(__k),
+                                                    upper_bound(__k));
+  }
+
+}; // class _RB_tree
 
 }; // namespace ft
 
