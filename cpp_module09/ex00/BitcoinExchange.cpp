@@ -70,6 +70,7 @@ private:
 			}
 			file.close();
 		} else {
+			std::cout<<"Error: cannot open file"<<std::endl;
 			throw std::exception();
 		}
 	}

@@ -11,7 +11,7 @@ int main(int ac, char *av[])
 	try {
 		userDb = new UserDatabase(ac, av);
 	} catch (std::exception &e) {
-		return 0;
+		return 1;
 	}
 
 
@@ -20,7 +20,7 @@ int main(int ac, char *av[])
 	} catch (std::exception &e) {
 		delete userDb;
 		delete exchanger;
-		return 0;
+		return 1;
 	}
 
 	while (1) 

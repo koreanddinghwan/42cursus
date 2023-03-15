@@ -17,7 +17,7 @@ class UserDatabase {
 	public:
 		UserDatabase(int ac, char *av[]) {
 			std::string line;
-			if (ac < 2) {
+			if (ac != 2) {
 				std::cout<<fileError<<std::endl;
 				throw std::exception();
 			}
