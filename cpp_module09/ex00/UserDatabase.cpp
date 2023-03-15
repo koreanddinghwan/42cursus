@@ -17,11 +17,15 @@ class UserDatabase {
 	public:
 		UserDatabase(int ac, char *av[]) {
 			std::string line;
-			if (ac < 2)
+			if (ac < 2) {
 				std::cout<<fileError<<std::endl;
+				throw std::exception();
+			}
 			file.open(av[1]);
-			if (file.fail())
+			if (file.fail()) {
 				std::cout<<fileError<<std::endl;
+				throw std::exception();
+			} 
 			std::getline(file, line);
 		}
 		~UserDatabase() {}
@@ -43,14 +47,22 @@ class UserDatabase {
 				delete rtn;
 				return 0;
 			}
-			std::cout<<line<<std::endl;
 			sscanf(line.c_str(), "%lld-%lld-%lld | %lf", &y,&m,&d,&v);
 			try {
 				rtn->setYear(y);
 				rtn->setMonth(m);
 				rtn->setDay(d);
+			} catch (std::exception &e) {
+				std::cout<<"Error: "<<e.what()<<" => "<<line<<std::endl;
+				delete rtn;
+				throw e;
+			}
+
+			try {
 				rtn->setValue(v);
 			} catch (std::exception &e) {
+				std::cout<<"Error: "<<e.what()<<std::endl;
+				delete rtn;
 				throw e;
 			}
 			return rtn;

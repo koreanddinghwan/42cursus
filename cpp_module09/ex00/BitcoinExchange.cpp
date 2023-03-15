@@ -1,3 +1,4 @@
+#include <exception>
 #include <stdexcept>
 #include <stdlib.h>
 #include <fstream>
@@ -36,10 +37,10 @@ private:
 
 private:
 	void reserveVector() {
-		chart.reserve(14);
+		chart.resize(14);
 		for (int i = 0; i < 14; i++)
 		{
-			chart[i].reserve(12);
+			chart[i].resize(12);
 			for (int j = 0; j < 12; j++)
 			{
 				chart[i][j].assign(31, -1);
@@ -47,7 +48,7 @@ private:
 		}
 	}
 
-	void init(char const *fileName) {
+	void init(char const *fileName) throw(std::exception) {
 		std::string line;
 		short int	t_y;
 		char		t_m;
@@ -61,18 +62,19 @@ private:
 			std::getline(file, line);
 			while (std::getline(file, line))
 			{
-				std::cout<<line<<std::endl;
 				t_y = atoi(&line[0]);
 				t_m = atoi(&line[5]);
 				t_d = atoi(&line[8]);
 				t_price = atof(&line[11]);
 				chart[t_y - 2009][t_m - 1][t_d - 1] = t_price;
-				std::cout<<chart[t_y - 2009][t_m - 1][t_d - 1]<<std::endl;
 			}
 			file.close();
+		} else {
+			throw std::exception();
 		}
 	}
 
+public:
 	float getPrice(int y, int m, int d) const throw(std::out_of_range) {
 	  return chart[y-2009][m-1].at(d - 1);
 	}
