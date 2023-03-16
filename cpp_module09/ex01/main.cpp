@@ -1,4 +1,4 @@
-#include "./RPN.cpp"
+#include "./RPN.hpp"
 #include <exception>
 
 int main(int ac, char *av[])
