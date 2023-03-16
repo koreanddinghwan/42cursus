@@ -1,4 +1,5 @@
 #include "./DateAndValue.hpp"
+#include <iostream>
 
 DateAndValue::DateAndValue() {}
 DateAndValue::~DateAndValue() {}
@@ -23,6 +24,7 @@ void DateAndValue::setMonth(long long m) throw(InvalidDateException)
 
 void DateAndValue::setDay(long long d) throw(InvalidDateException) 
 {
+	std::cout<<d<<std::endl;
 	if (d < 1)
 		throw InvalidDateException();
 

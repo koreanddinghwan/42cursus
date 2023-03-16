@@ -55,5 +55,8 @@ void Exchanger::init(char const *fileName) throw(std::exception)
 
 float Exchanger::getPrice(int y, int m, int d) const throw(std::out_of_range) 
 {
-	  return chart[y-2009][m-1].at(d - 1);
+	if (y >= 2022 && m >= 3 && d >= 30)
+		return chart[13][2][28];
+
+	return chart[y-2009][m-1].at(d - 1);
 }
