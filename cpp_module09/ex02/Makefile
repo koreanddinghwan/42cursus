@@ -1,9 +1,9 @@
 NAME = PmergeMe
 CXX = c++
-CXXFLAGS = -Wall -Werror -Wextra -g3 -std=c++98
+CXXFLAGS = -Wall -Werror -Wextra -g3 -fsanitize=address -std=c++98
 INC = .
 
-SRCS = $(addprefix ./, main.cpp, MergeInsertionDeque.cpp, MergeInsertionList.cpp, PmergeMe.cpp)
+SRCS = $(addprefix ./, main.cpp MergeInsertionDeque.cpp MergeInsertionList.cpp PmergeMe.cpp)
 OBJS = $(SRCS:.cpp=.o)
 
 all : $(NAME)

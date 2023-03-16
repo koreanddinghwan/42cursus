@@ -19,10 +19,11 @@ private:
 	std::deque<int>	originalQueue;
 	std::deque<int>	deque;
 	int				counts;
-	int				thresHold;
+	unsigned int	thresHold;
+	int				printMax;
 
 public:
-	PmergeMe(int ac, char **av, int thresHold) throw(std::exception);
+	PmergeMe(int ac, char **av, int thresHold, int printMax) throw(std::exception);
 	~PmergeMe(); 
 
 private:
@@ -30,22 +31,22 @@ private:
 	PmergeMe& operator=(PmergeMe &o);
 
 	//merge-insert sort => 병합정렬을 통해 작은 부분으로 배열을 나눠가다가 일정 길이에 도달하면 삽입정렬을 수행.
-	void merge_insertion_sort_list(std::list<int> input_list);
+	void merge_insertion_sort_list(std::list<int> &input_list);
 
 	void merge_list(std::list<int> &input_list);
 	void insertion_list(std::list<int> &input_list);
-	typename std::list<int>::iterator binary_search_list(std::list<int>::iterator begin, std::list<int>::iterator end, const int& value);
+	std::list<int>::iterator binary_search_list(std::list<int>::iterator begin, std::list<int>::iterator end, const int& value);
 
-
-	void merge_insertion_sort_deque(std::deque<int> q);
+	void merge_insertion_sort_deque(std::deque<int> &queue);
 	void merge_deque(std::deque<int> &input_deque);
 	void insertion_deque(std::deque<int> &input_deque);
-	typename std::deque<int>::iterator binary_search_deque(std::deque<int>::iterator begin, std::deque<int>::iterator end, const int& value);
+	std::deque<int>::iterator binary_search_deque(std::deque<int>::iterator begin, std::deque<int>::iterator end, const int& value);
 
 public:
-	void sortAndPrintElapse(); 
+	void print(); 
 private:
-	void printBeforeAfter(); 
+	void printList(std::list<int> l, const char *msg);
+	void printDeque(std::deque<int> l, const char *msg);
 	void printMessage(double time, const char *type);
 };
 

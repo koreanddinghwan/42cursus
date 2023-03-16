@@ -1,6 +1,6 @@
 #include "./PmergeMe.hpp"
 
-PmergeMe::PmergeMe(int ac, char **av, int thresHold) throw(std::exception)
+PmergeMe::PmergeMe(int ac, char **av, int thresHold, int printMax) throw(std::exception)
 {
 	if (ac < 2)
 	{
@@ -8,6 +8,7 @@ PmergeMe::PmergeMe(int ac, char **av, int thresHold) throw(std::exception)
 		throw std::exception();
 	}
 	this->thresHold = thresHold;
+	this->printMax = printMax;
 
 	int i = 1;
 	while (av[i])
@@ -39,60 +40,80 @@ PmergeMe::PmergeMe(int ac, char **av, int thresHold) throw(std::exception)
 }
 
 PmergeMe::~PmergeMe() {}
-PmergeMe::PmergeMe(PmergeMe &o) {}
+PmergeMe::PmergeMe(PmergeMe &o) { static_cast<void>(o);}
+
+PmergeMe& PmergeMe::operator=(PmergeMe &o) { static_cast<void>(o); return *this;}
 
 
-PmergeMe& PmergeMe::operator=(PmergeMe &o) {return *this;}
-
-void PmergeMe::sortAndPrintElapse() {
+void PmergeMe::print() {
 	clock_t start;
 	clock_t end;
-	double	q_els;
-	double	l_els;
+	double	els;
+
+	std::cout <<"\033[5;31m [std::list] \033[0m"<< std::endl;
+	printList(this->originalList, "Before:  ");
 
 	start = clock();
-	this->list = originalList;
+	this->list.assign(originalList.begin(),originalList.end());
 	merge_insertion_sort_list(this->list);
 	end = clock();
-	l_els = static_cast<double>(end - start);
+	els = static_cast<double>(end - start);
 
+	printList(this->list, "After:   ");
+	printMessage(els, "list");
+
+	std::cout<<std::endl;
+
+	std::cout <<"\033[5;31m [std::deque] \033[0m"<< std::endl;
+	printDeque(this->originalQueue, "Before:  ");
+
+	//check time
 	start = clock();
-	this->deque = originalQueue;
+	this->deque.assign(originalQueue.begin(), originalQueue.end());
 	merge_insertion_sort_deque(this->deque);
 	end = clock();
-	q_els = static_cast<double>(end - start);
+	els = static_cast<double>(end - start);
 
-	printBeforeAfter();
-	printMessage(l_els, "list");
-	printMessage(q_els, "deque");
+	printDeque(this->deque, "After:   ");
+	printMessage(els, "deque");
 }
 
-void PmergeMe::printBeforeAfter() {
+
+void PmergeMe::printList(std::list<int> l, const char *msg)
+{
 	int count = 0;
 
-	std::cout<<"Before:  ";
-	for (std::list<int>::iterator it = this->originalList.begin(); it != this->originalList.end(); it++, count++){
+	std::cout<<msg;
+	for (std::list<int>::iterator it = l.begin(); it != l.end(); it++, count++){
 		std::cout<<*it<<" ";
-		if (count == 7)
+		if (count == this->printMax)
 		{
 			std::cout<<"[....]"<<std::endl;
 			break;
 		}
 	}
+	if (count != this->printMax)
+		std::cout<<std::endl;
+}
 
-	count = 0;
-	std::cout<<"After:   ";
-	for (std::list<int>::iterator it = this->list.begin(); it != this->list.end(); it++, count++){
+void PmergeMe::printDeque(std::deque<int> q, const char *msg)
+{
+	int count = 0;
+
+	std::cout<<msg;
+	for (std::deque<int>::iterator it = q.begin(); it != q.end(); it++, count++){
 		std::cout<<*it<<" ";
-		if (count == 7)
+		if (count == this->printMax)
 		{
 			std::cout<<"[....]"<<std::endl;
 			break;
 		}
 	}
+	if (count != this->printMax)
+		std::cout<<std::endl;
 }
 
 void PmergeMe::printMessage(double time, const char *type) {
 	std::cout<<"Time to process a range of 3000 elements with std::["<<type<<"] :";
-	std::cout<<std::setprecision(8)<<time / 100000<<"us"<<std::endl;
-	}
+	std::cout<<std::setprecision(7)<<time<<"us"<<std::endl;
+}

@@ -3,10 +3,9 @@
 
 int main(int ac, char **av)
 {
-
 	try {
-	PmergeMe pm(ac, av, 32);
-	pm.sortAndPrintElapse();
+		PmergeMe pm(ac, av, 2, 7);
+		pm.print();
 	} catch (std::exception &e) {
 		return 1;
 	}
