@@ -53,9 +53,11 @@ void PmergeMe::print() {
 	std::cout <<"\033[5;31m [std::list] \033[0m"<< std::endl;
 	printList(this->originalList, "Before:  ");
 
+	//START TIME
 	start = clock();
 	this->list.assign(originalList.begin(),originalList.end());
 	merge_insertion_sort_list(this->list);
+	//END TIME
 	end = clock();
 	els = static_cast<double>(end - start);
 
@@ -67,10 +69,11 @@ void PmergeMe::print() {
 	std::cout <<"\033[5;31m [std::deque] \033[0m"<< std::endl;
 	printDeque(this->originalQueue, "Before:  ");
 
-	//check time
+	//START TIME
 	start = clock();
 	this->deque.assign(originalQueue.begin(), originalQueue.end());
 	merge_insertion_sort_deque(this->deque);
+	//END TIME
 	end = clock();
 	els = static_cast<double>(end - start);
 
