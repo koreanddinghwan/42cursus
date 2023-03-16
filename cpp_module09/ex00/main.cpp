@@ -1,6 +1,6 @@
 //Todo cpp, hpp분리
-#include "./BitcoinExchange.cpp"
-#include "./UserDatabase.cpp"
+#include "UserDatabase.hpp"
+#include "BitcoinExchange.hpp"
 #include <exception>
 
 int main(int ac, char *av[]) 
@@ -55,6 +55,5 @@ int main(int ac, char *av[])
 
 	delete userDb;
 	delete exchanger;
-	while (1);
 	return 0; 
 }
