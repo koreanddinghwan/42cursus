@@ -35,12 +35,10 @@ private:
 
 	void merge_list(std::list<int> &input_list);
 	void insertion_list(std::list<int> &input_list);
-	std::list<int>::iterator binary_search_list(std::list<int>::iterator begin, std::list<int>::iterator end, const int& value);
 
 	void merge_insertion_sort_deque(std::deque<int> &queue);
 	void merge_deque(std::deque<int> &input_deque);
 	void insertion_deque(std::deque<int> &input_deque);
-	std::deque<int>::iterator binary_search_deque(std::deque<int>::iterator begin, std::deque<int>::iterator end, const int& value);
 
 public:
 	void print(); 

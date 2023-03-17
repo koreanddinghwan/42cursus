@@ -47,22 +47,6 @@ void PmergeMe::insertion_deque(std::deque<int> &input_deque)
 	}
 }
 
-std::deque<int>::iterator PmergeMe::binary_search_deque(std::deque<int>::iterator begin, std::deque<int>::iterator end, const int& value) {
-	std::deque<int>::iterator middle;
-	while (begin != end) {
-		middle = begin;
-		std::advance(middle, std::distance(begin, end) / 2);
-		if (*middle < value) {
-			++middle;
-			begin = middle;
-		} else {
-			end = middle;
-		}
-	}
-	return end;
-}
-
-
 void PmergeMe::merge_insertion_sort_deque(std::deque<int> &input_deque)
 {
 	//임계값. 배열이 얼마나 작을때 merge대신 insertion쓸것인가

@@ -47,23 +47,6 @@ void PmergeMe::insertion_list(std::list<int> &input_list)
 	}
 }
 
-std::list<int>::iterator PmergeMe::binary_search_list(std::list<int>::iterator begin, std::list<int>::iterator end, const int& value) 
-{
-	std::list<int>::iterator middle;
-	while (begin != end) {
-		middle = begin;
-		std::advance(middle, std::distance(begin, end) / 2);
-		if (*middle < value) {
-			++middle;
-			begin = middle;
-		} else {
-			end = middle;
-		}
-	}
-	return end;
-}
-
-
 void PmergeMe::merge_insertion_sort_list(std::list<int> &input_list) 
 {
 	//임계값. 배열이 얼마나 작을때 merge대신 insertion쓸것인가
