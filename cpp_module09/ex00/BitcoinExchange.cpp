@@ -1,4 +1,5 @@
 #include "./BitcoinExchange.hpp"
+#include <iomanip>
 
 Exchanger::Exchanger(const char *fileName) 
 {
@@ -71,7 +72,7 @@ void Exchanger::printPriceByDate(DateAndValue *v) {
 			continue;
 		}
 		else {
-			std::cout<<p * v->getValue()<<std::endl;
+			std::cout<<std::fixed<<std::setprecision(2)<<p * v->getValue()<<std::endl;
 			break;
 		}
 	}
