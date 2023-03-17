@@ -6,7 +6,7 @@
 int main(int ac, char *av[]) 
 {
 	UserDatabase	*userDb;
-	Exchanger		*exchanger;
+	Exchanger		*exchangerDb;
 
 	try {
 		userDb = new UserDatabase(ac, av);
@@ -16,10 +16,8 @@ int main(int ac, char *av[])
 
 
 	try {
-		exchanger = new Exchanger("./data.csv");
+		exchangerDb = new Exchanger("./data.csv");
 	} catch (std::exception &e) {
-		delete userDb;
-		delete exchanger;
 		return 1;
 	}
 
@@ -28,6 +26,7 @@ int main(int ac, char *av[])
 		DateAndValue *v;
 
 		try {
+			//get 1 value from user Database(input.txt)
 			v = userDb->get();
 			if (v == NULL){ //file end
 				delete v;
@@ -36,24 +35,8 @@ int main(int ac, char *av[])
 		} catch (std::exception &e) {
 			continue;//error in file
 		}
-
-		std::cout<<static_cast<int>(v->getYear())<<"-"<<static_cast<int>(v->getMonth())<<"-"<<static_cast<int>(v->getDay())<<" => "<<v->getValue()<<" = ";
-		while (1) {
-			float p = exchanger->getPrice(v->getYear(), v->getMonth(), v->getDay());
-			if (p == -1)
-			{
-				v->setRewindOneDay();
-				continue;
-			}
-			else {
-				std::cout<<p * v->getValue()<<std::endl;
-				break;
-			}
-		}
+		exchangerDb->printPriceByDate(v);
 		delete v;
 	}
-
-	delete userDb;
-	delete exchanger;
 	return 0; 
 }

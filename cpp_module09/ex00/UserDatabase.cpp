@@ -40,7 +40,7 @@ DateAndValue* UserDatabase::get(void) throw (std::exception)
 		rtn->setMonth(m);
 		rtn->setDay(d);
 	} catch (std::exception &e) {
-		std::cout<<"Error: "<<e.what()<<" => "<<line<<std::endl;
+		std::cout<<"Error: "<<e.what()<<" => "<<line.substr(0, line.find('|'))<<std::endl;
 		delete rtn;
 		throw e;
 	}

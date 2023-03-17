@@ -53,10 +53,27 @@ void Exchanger::init(char const *fileName) throw(std::exception)
 	}
 }
 
-float Exchanger::getPrice(int y, int m, int d) const throw(std::out_of_range) 
+float Exchanger::getPrice(int y, int m, int d) const 
 {
 	if (y >= 2022 && m >= 3 && d >= 30)
 		return chart[13][2][28];
 
 	return chart[y-2009][m-1].at(d - 1);
 }
+
+void Exchanger::printPriceByDate(DateAndValue *v) {
+	std::cout<<static_cast<int>(v->getYear())<<"-"<<static_cast<int>(v->getMonth())<<"-"<<static_cast<int>(v->getDay())<<" => "<<v->getValue()<<" = ";
+	while (1) {
+		float p = this->getPrice(v->getYear(), v->getMonth(), v->getDay());
+		if (p == -1)
+		{
+			v->setRewindOneDay();
+			continue;
+		}
+		else {
+			std::cout<<p * v->getValue()<<std::endl;
+			break;
+		}
+	}
+}
+

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "DateAndValue.hpp"
 
 #ifndef __BitcoinExchange_HPP__
 # define __BitcoinExchange_HPP__
@@ -35,9 +36,10 @@ private:
 private:
 	void reserveVector();
 	void init(char const *fileName) throw(std::exception);
+	float getPrice(int y, int m, int d) const;
 
 public:
-	float getPrice(int y, int m, int d) const throw(std::out_of_range);
+	void printPriceByDate(DateAndValue *v);
 };
 
 #endif
