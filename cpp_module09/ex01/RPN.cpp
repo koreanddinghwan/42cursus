@@ -62,7 +62,7 @@ RPN::RPN(int ac, char *av[])
 RPN::~RPN() {}
 
 void RPN::printResult() {
-	if (!errBit)
+	if (!errBit && this->Result.size() == 1)
 		std::cout<<Result.top()<<std::endl;
 	else
 		std::cout<<"Error"<<std::endl;
