@@ -51,7 +51,7 @@ void PmergeMe::print() {
 	double	els;
 
 	std::cout <<"\033[5;31m [std::list] \033[0m"<< std::endl;
-	printList(this->originalList, "Before:  ");
+	printList(this->originalList, "Before:  \033[35m");
 
 	//START TIME
 	start = clock();
@@ -61,13 +61,13 @@ void PmergeMe::print() {
 	end = clock();
 	els = static_cast<double>(end - start);
 
-	printList(this->list, "After:   ");
+	printList(this->list, "After:   \033[35m");
 	printMessage(els, "list");
 
 	std::cout<<std::endl;
 
 	std::cout <<"\033[5;31m [std::deque] \033[0m"<< std::endl;
-	printDeque(this->originalQueue, "Before:  ");
+	printDeque(this->originalQueue, "Before:  \033[35m");
 
 	//START TIME
 	start = clock();
@@ -77,7 +77,7 @@ void PmergeMe::print() {
 	end = clock();
 	els = static_cast<double>(end - start);
 
-	printDeque(this->deque, "After:   ");
+	printDeque(this->deque, "After:   \033[35m");
 	printMessage(els, "deque");
 }
 
@@ -87,15 +87,12 @@ void PmergeMe::printList(std::list<int> l, const char *msg)
 	int count = 0;
 
 	std::cout<<msg;
-	for (std::list<int>::iterator it = l.begin(); it != l.end(); it++, count++){
+	for (std::list<int>::iterator it = l.begin(); it != l.end() && count < this->printMax; it++, count++){
 		std::cout<<*it<<" ";
-		if (count == this->printMax)
-		{
-			std::cout<<"[....]"<<std::endl;
-			break;
-		}
 	}
-	if (count != this->printMax)
+	if (count == this->printMax)
+		std::cout<<"[...]\033[0m"<<std::endl;
+	else
 		std::cout<<std::endl;
 }
 
@@ -104,19 +101,16 @@ void PmergeMe::printDeque(std::deque<int> q, const char *msg)
 	int count = 0;
 
 	std::cout<<msg;
-	for (std::deque<int>::iterator it = q.begin(); it != q.end(); it++, count++){
+	for (std::deque<int>::iterator it = q.begin(); it != q.end() && count < this->printMax; it++, count++){
 		std::cout<<*it<<" ";
-		if (count == this->printMax)
-		{
-			std::cout<<"[....]"<<std::endl;
-			break;
-		}
 	}
-	if (count != this->printMax)
+	if (count == this->printMax)
+		std::cout<<"[...]\033[0m"<<std::endl;
+	else
 		std::cout<<std::endl;
 }
 
 void PmergeMe::printMessage(double time, const char *type) {
-	std::cout<<"Time to process a range of 3000 elements with std::["<<type<<"] :";
-	std::cout<<std::setprecision(7)<<time<<"us"<<std::endl;
+	std::cout<<"\033[33m Time to process a range of \033[35m " << this->originalList.size() << " \033[33m elements with std::["<<type<<"] :\033[35m";
+	std::cout<<std::setprecision(7)<<time<<"us \033[0m"<<std::endl;
 }
