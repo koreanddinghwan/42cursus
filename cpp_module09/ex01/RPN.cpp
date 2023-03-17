@@ -22,7 +22,7 @@ RPN::RPN(int ac, char *av[])
 		else if (av[1][i] == 42 || av[1][i] == 43 || av[1][i] == 45 || av[1][i] == 47) 
 		{
 			//if operator but stack is empty, error
-			if (Result.empty())
+			if (Result.size() < 2)
 			{
 				this->errBit = 1;
 				break;
