@@ -41,7 +41,15 @@ RPN::RPN(int ac, char *av[])
 				else if (av[1][i] == 45)
 					Result.push(operand2 - operand1);
 				else if (av[1][i] == 47)
+				{
+					if (operand1 == 0)
+					{
+						this->errBit = 1;
+						break;
+					}
+					else
 					Result.push(operand2 / operand1);
+				}
 			}
 		}
 		else {
